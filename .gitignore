@@ -16,7 +16,7 @@ ENV/
 db.sqlite3
 /media/
 staticfiles/
-static/
+flashcards/static/
 migrations/__pycache__/
 flashcards/flashcards/settings.py  # sensitive config
 
