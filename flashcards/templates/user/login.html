@@ -1,115 +1,12 @@
 <!--source code for this log in page: https://github.com/puikinsh/login-forms/tree/main/forms/glassmorphism-->
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sample design and not final login page</title>
-    <style>
-        /* === Glassmorphism Login Page === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            height: 100vh;
-            background: linear-gradient(135deg, #74ABE2, #5563DE);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .login-container {
-            position: relative;
-            width: 380px;
-            padding: 2rem;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            text-align: center;
-            color: #fff;
-        }
-
-        .login-container h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .input-box {
-            position: relative;
-            width: 100%;
-            margin-bottom: 1.5rem;
-        }
-
-        .input-box input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            outline: none;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 1rem;
-        }
-
-        .input-box input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: rgba(255, 255, 255, 0.3);
-            border: none;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-
-        .login-btn:hover {
-            background: rgba(255, 255, 255, 0.5);
-            transform: scale(1.03);
-        }
-
-        .extra-links {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .extra-links a {
-            color: #fff;
-            text-decoration: underline;
-            transition: color 0.3s;
-        }
-
-        .extra-links a:hover {
-            color: #cfd8ff;
-        }
-
-        .error-message {
-            color: #ff8a80;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            display: none;
-        }
-
-        @media (max-width: 420px) {
-            .login-container {
-                width: 90%;
-                padding: 1.5rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'user/css/login.css' %}">
 </head>
 <body>
     <div class="login-container">
