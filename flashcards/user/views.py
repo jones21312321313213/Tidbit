@@ -60,18 +60,5 @@ class ChangeUsernameView(View):
 #         return HttpResponse('creating deck')
 
 #Card
-class CardView(View):
-    template_name = 'todo'
-
-    def get(self, request):
-        return HttpResponse('viewing card')
-
-#Folder
-
-class FolderCreateView(View):
-    template_name = 'todo'
-
-    def get(self, request):
-        return HttpResponse('creating folder')
 
 
