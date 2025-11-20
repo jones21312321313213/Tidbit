@@ -16,7 +16,6 @@ ENV/
 db.sqlite3
 /media/
 staticfiles/
-static/
 migrations/__pycache__/
 flashcards/flashcards/settings.py  # sensitive config
 
@@ -27,7 +26,3 @@ flashcards/flashcards/settings.py  # sensitive config
 # System files
 .DS_Store
 Thumbs.db
-
-
-#settings.py sa flashcards
-flashcards/flashcards/settings.py
