@@ -52,11 +52,7 @@
 
 /*  */
 
-  /* * Essential CSS for the three-column layout:
-    * 1. Clear the fixed navbar height.
-    * 2. Use flexbox to align content and sidebars.
-    * 3. Define fixed widths for the sidebars.
-    */
+
     :root {
       --sidebar-width: 250px;
       --navbar-height: 56px;
