@@ -41,6 +41,12 @@ class ChangeUsernameView(View):
     def get(self, request):
         return HttpResponse('Change username')
 
+class HomePageView(View):
+    template_name = 'user/home.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
 
 #Dont know if these below are part of user functionalities can remove
 #Notification

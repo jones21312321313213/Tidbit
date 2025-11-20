@@ -1,0 +1,114 @@
+  /* 1. Define the sidebar width */
+    :root {
+      --sidebar-width: 280px;
+    }
+
+    /* 2. Set the body padding to account for the fixed navbar */
+    body {
+        padding-top: 56px;
+    }
+
+    /* 3. Use Flexbox to lay out the wrapper (Sidebar + Content) */
+    .main-wrapper {
+        display: flex;
+        flex-direction: row;
+        /* Ensure the wrapper uses available height below the fixed navbar */
+        min-height: calc(100vh - 56px);
+    }
+
+    /* 4. Style the Sidebar container for sticky position and width management */
+    #sidebar-container {
+        flex-shrink: 0; /* Prevents the sidebar from shrinking below its width */
+        height: calc(100vh - 56px); /* Full height below the navbar */
+        position: sticky;
+        top: 56px; /* Stick it right below the fixed navbar */
+        z-index: 1000;
+
+        /* The crucial part: manage the width transition */
+        width: var(--sidebar-width);
+        transition: width 0.3s ease-in-out;
+        overflow-x: hidden; /* Hide horizontal scrollbar during collapse */
+    }
+
+    /* 5. Force the sidebar's width to 0 when collapsed */
+    /* We target the ID when NOT showing to override Bootstrap's default collapse height behavior */
+    #sidebar-container:not(.show) {
+        width: 0 !important; /* Force width to 0 for full collapse */
+    }
+
+    /* 6. Ensure the Sidebar's internal content is contained */
+    .sidebar-content {
+        width: var(--sidebar-width); /* Fixed width for inner content */
+    }
+
+    /* 7. The main content takes up all available space */
+    #main-content {
+        flex-grow: 1;
+        padding: 1rem;
+    }
+
+
+
+
+/*  */
+
+  /* * Essential CSS for the three-column layout:
+    * 1. Clear the fixed navbar height.
+    * 2. Use flexbox to align content and sidebars.
+    * 3. Define fixed widths for the sidebars.
+    */
+    :root {
+      --sidebar-width: 250px;
+      --navbar-height: 56px;
+    }
+
+    .main-wrapper {
+        padding-top: var(--navbar-height);
+        display: flex;
+        min-height: 100vh;
+    }
+
+    #sidebar-container-left,
+    #sidebar-container-right {
+        width: var(--sidebar-width);
+        flex-shrink: 0;
+        transition: margin-left 0.3s, margin-right 0.3s; /* Smooth transition for collapse */
+    }
+
+    /* Make collapsed sidebars occupy 0 width visually, shifting content */
+    #sidebar-container-left:not(.show) {
+        margin-left: calc(-1 * var(--sidebar-width));
+    }
+
+    #sidebar-container-right:not(.show) {
+        margin-right: calc(-1 * var(--sidebar-width));
+    }
+
+    #main-content {
+        flex-grow: 1; /* Takes up all remaining middle space */
+        padding: 15px;
+    }
+
+    .sidebar-content {
+        height: 100%;
+    }
+
+    /* Ensure collapsed sidebars are positioned correctly on mobile */
+    @media (max-width: 991.98px) {
+        #sidebar-container-left,
+        #sidebar-container-right {
+            position: fixed;
+            z-index: 1030;
+            top: var(--navbar-height);
+            height: calc(100% - var(--navbar-height));
+            /* Ensure mobile collapse works by being off-screen */
+        }
+        #sidebar-container-right {
+            right: 0;
+            border-left: 1px solid #dee2e6;
+        }
+        #sidebar-container-left {
+            left: 0;
+            border-right: 1px solid #dee2e6;
+        }
+    }
