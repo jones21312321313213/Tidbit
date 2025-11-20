@@ -11,7 +11,7 @@ class Card(models.Model):
         Review = 2
         Relearning = 3
 
-    deck = models.ForeignKey(Deck, on_delete=models.CASCADE, related_name='cards')
+    deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     stability = models.FloatField(default=0)
@@ -21,6 +21,8 @@ class Card(models.Model):
     next_review = models.DateTimeField(default=timezone.now)
     step = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    front_field = models.TextField(null=True, blank=True)
 
     def update_schedule(self, rating):
         FSRSCard = FSRS_Card(
@@ -44,7 +46,6 @@ class Card(models.Model):
         self.save()
 
 class BasicCard(Card):
-    front_field = models.TextField()
     back_field = models.TextField()
 
 class IdentificationCard(Card):
