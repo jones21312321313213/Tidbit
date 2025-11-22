@@ -6,11 +6,17 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 
 class DeckCreateView(CreateView):
-    template_name = 'todo'
+    template_name = 'deck/deck_create.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
 
 
 class DeckListView(ListView):
-    template_name = 'todo'
+    template_name = 'deck/deck_view.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
 
 
 
