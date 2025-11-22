@@ -1,0 +1,25 @@
+{% extends "base/base.html" %}
+
+{% block title %}Create Deck{% endblock title %}
+
+{% block content %}
+    <div class="mx-auto col-md-7 pt-4 px-5" style="min-height: 300px; max-width: 1000px">
+        <h1 class="mb-4">Create Deck</h1>
+
+        <form method="post" action="{% url 'deck_create' %}">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="name" placeholder="Enter deck title" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="description" name="description" placeholder="Enter deck description" required>
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100" style="border-radius: 6px;">CREATE</button>
+        </form>
+    </div>
+{% endblock content %}
