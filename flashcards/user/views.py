@@ -6,13 +6,44 @@ from django.views import View
 # Create your views here.
 
 class LandingPageView(View):
-    template_name = 'index.html'
+    template_name = 'user/index.html'
 
     def get(self,request):
         return render(request, self.template_name)
 
 class LoginView(View):
-    template_name = 'login.html'
+    template_name = 'user/login.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
+
+class RegisterView(View):
+    template_name = 'user/register.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+class ForgotPasswordView(View):
+    template_name = 'user/forgot_password.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
+
+class ForgotPasswordCodeView(View):
+    template_name = 'user/forgot_password_code.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
+
+class ForgotPasswordChangePasswordView(View):
+    template_name = 'user/forgot_password_changepw.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
+
+class ForgotPasswordSuccessView(View):
+    template_name = 'user/forgot_password_success.html'
 
     def get(self,request):
         return render(request, self.template_name)
@@ -41,37 +72,30 @@ class ChangeUsernameView(View):
     def get(self, request):
         return HttpResponse('Change username')
 
+class HomePageView(View):
+    template_name = 'user/home.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
 
 #Dont know if these below are part of user functionalities can remove
 #Notification
-
-class NotificationView(View):
-    template_name = 'todo'
-
-    def get(self, request):
-        return HttpResponse('Viewing notification')
-
+# Gibalhin nakos notif - jm was here
+# class NotificationView(View):
+#     template_name = 'todo'
+#
+#     def get(self, request):
+#         return HttpResponse('Viewing notification')
+#
 
 #Deck
-class DeckCreateView(View):
-    template_name = 'todo'
+# class DeckCreateView(View):
+#     template_name = 'todo'
 
-    def get(self, request):
-        return HttpResponse('creating deck')
+#     def get(self, request):
+#         return HttpResponse('creating deck')
 
 #Card
-class CardView(View):
-    template_name = 'todo'
-
-    def get(self, request):
-        return HttpResponse('viewing card')
-
-#Folder
-
-class FolderCreateView(View):
-    template_name = 'todo'
-
-    def get(self, request):
-        return HttpResponse('creating folder')
 
 

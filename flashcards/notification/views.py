@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 # notifications/views.py
+=======
+>>>>>>> main
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.http import HttpResponse
@@ -15,7 +18,11 @@ class NotificationListView(View):
 class NotificationMarkAsReadView(View):
     def post(self, request, pk):
 
+<<<<<<< HEAD
         # For now, just a dummy response
+=======
+        # For now dummy response
+>>>>>>> main
         print(f"Notification {pk} marked as read.")
 
         # Typically redirects back to the notification list or another page

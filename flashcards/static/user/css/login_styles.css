@@ -1,0 +1,29 @@
+.password-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    cursor: pointer;
+    color: #6c757d;
+    margin-top: 15px;
+}
+
+#passwordInput {
+    padding-right: 40px;
+}
+
+
+#logo{
+    height: 300px;
+    width: 300px;
+}
+
+.main{
+    margin-top: -90px;
+}
+
