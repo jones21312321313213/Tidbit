@@ -9,5 +9,6 @@ urlpatterns = [
     path('profile/settings/change-password/', views.ChangePasswordView.as_view(), name='change_password'),
     path('profile/settings/change-username/', views.ChangeUsernameView.as_view(), name='change_password'),
     path('home/', views.HomePageView.as_view(),name='home'),
+    path('register/', views.RegisterView.as_view(), name='register'),
 
 ]

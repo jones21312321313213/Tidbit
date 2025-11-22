@@ -17,6 +17,12 @@ class LoginView(View):
     def get(self,request):
         return render(request, self.template_name)
 
+class RegisterView(View):
+    template_name = 'user/register.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
 # PROFILE Management
 class ProfileView(View):
     template_name = 'tomake'
