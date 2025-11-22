@@ -1,206 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base/base.html" %}
 {% load static %}
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tidbit Flashcards Dashboard</title>
+
+{# 1. Override the title for this specific page #}
+{% block title %}Tidbit Home{% endblock title %}
 
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'user/css/home_style.css' %}">
+{# 3. The Main Content Block - This replaces the center area of base.html #}
+{% block content %}
+    <div class="mx-auto col-md-7 pt-4 px-5 " style="min-height: 300px; max-width: 1000px">
+        <h1 class="ms-3 text-left">Decks</h1>
 
-
-</head>
-<body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container-fluid d-flex flex-column">
-
-            <div class="d-flex w-100 align-items-center justify-content-between mb-2">
-
-                <a class="navbar-brand" href="#">
-                    <img src="{% static 'assets/tidbiticon.png' %}" width="30" height="30" alt="">
-                </a>
-
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-bell fs-4 me-3"></i>
-                    <i class="bi bi-person-circle fs-4"></i>
-                </div>
-            </div>
-
-            <div class="d-flex w-100 align-items-center justify-content-between">
-
-                <button class="btn btn-outline-secondary" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#sidebar-container-left">
-                    <i class="bi bi-list fs-3"></i>
-                </button>
-
-                <button class="btn btn-outline-secondary" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#sidebar-container-right">
-                    <i class="bi bi-arrow-bar-left fs-3"></i>
-                </button>
-            </div>
-
-        </div>
-    </nav>
-
-
-    <div class="main-wrapper">
-        <div class="collapse d-lg-block show" id="sidebar-container-left">
-
-            <div class="sidebar-content d-flex flex-column flex-shrink-0 p-3 bg-light h-100">
-                <hr>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active" aria-current="page">
-                            <i class="bi bi-house-door me-2"></i>
-                            Home
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-dark">
-                            <i class="bi bi-folder me-2"></i>
-                            Your library
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-dark">
-                            <i class="bi bi-bell me-2"></i>
-                            Notifications
-                        </a>
-                    </li>
-
-                <hr>
-                    <h3 class="me-2 mb-0 fs-6 ms-3 mb-1">Flashcards</h3>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-dark">
-                            <i class="bi bi-card-text me-2"></i>
-                            Flashcards
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-dark">
-                            <i class="bi bi-bar-chart me-2"></i>
-                            Stats
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-dark">
-                            <i class="bi bi-plus-square me-2"></i>
-                            Add Flashcards
-                        </a>
-                    </li>
-                    <hr>
-
-                    <h3 class="me-2 mb-0 fs-6 ms-3 mb-1">Decks</h3>
-                    <!-- temp rani sila -->
-                    <h3 class="me-2 mb-0 fs-6 ms-3 mb-1 mt-3">Automata</h3>
-                    <h3 class="me-2 mb-0 fs-6 ms-3 mb-1 mt-3">Math</h3>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-dark">
-                            <i class="bi bi-plus-circle me-2"></i>
-                            Add Decks
-                        </a>
-                    </li>
-
-                    <hr>
-                </ul>
-            </div>
-        </div>
-
-
-
-        <div id="main-content">
-            <h1 class = "ms-3">Decks</h1>
-            <div class="p-4 rounded-3 border bg-white shadow-sm" style="min-height: 800px;">
-                <table class="table">
-                    <thead>
-                        <tr>
-                        <th scope="col">Deck</th>
-                        <th scope="col">New</th>
-                        <th scope="col">Learn</th>
-                        <th scope="col">Due</th>
-                         <th scope="col"> </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                Automata
-                                 <div class="text-muted small">
-                                    State diagrams
-                                </div>
-                            </td>
-                            <td class = "text-primary">20</td>
-                            <td class = "text-danger">11</td>
-                            <td class = "text-secondary">0</td>
-                            <td><i class="bi bi-gear-fill"></i></td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                Math
-                                 <div class="text-muted small">
-                                    About math stuff
-                                </div>
-                            </td>
-                            <td class = "text-primary">20</td>
-                            <td class = "text-danger">11</td>
-                            <td class = "text-success">31</td>
-                            <td><i class="bi bi-gear-fill"></i></td>
-                        </tr>
-
-
-
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
-        <div class="collapse d-lg-block show" id="sidebar-container-right">
-            <div class="sidebar-content d-flex flex-column flex-shrink-0 p-3 bg-light h-100">
-
-                <div class="d-flex align-items-center gap-4">
-                    <h3 class="me-2 mb-0 fs-6 ms-1 mb-1 text-dark">Folders</h3>
-                    <i class="bi bi-pencil text-dark"></i>
-                    <i class="bi bi-folder-plus text-dark"></i>
-                    <i class="bi bi-star text-dark"></i>
-                </div>
-
-                <hr>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <!-- temp ra guro ni sila as for now -->
-                    <!--folders -->
-                    <li class="nav-item">
-                        <a class="nav-link text-dark d-flex justify-content-between"
-                        data-bs-toggle="collapse" href="#foldersCollapse" role="button"
-                        aria-expanded="false" aria-controls="foldersCollapse">
-                            Automata
-                            <i class="bi bi-chevron-down"></i>
-                        </a>
-
-                        <!-- notes-->
-                        <div class="collapse" id="foldersCollapse">
-                            <ul class="nav flex-column ms-3 mt-2">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link text-dark">
-                                        Turing Machine
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+        <div class="p-1 rounded-3 border bg-white shadow-sm border-secondary w-100">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col" class="ps-4 py-3">Deck</th>
+                    <th scope="col" class="text-center">New</th>
+                    <th scope="col" class="text-center">Learn</th>
+                    <th scope="col" class="text-center">Due</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="ps-4 py-3">
+                        <div class="fw-bold">Math</div>
+                        <div class="text-muted small">About Math and stuff</div>
+                    </td>
+                    <td class="align-middle text-center text-info fw-bold">20</td>
+                    <td class="align-middle text-center text-danger fw-bold">11</td>
+                    <td class="align-middle text-center text-success fw-bold">0</td>
+                    <td class="align-middle text-end pe-4"><i class="bi bi-gear"></i></td>
+                </tr>
+                <tr>
+                    <td class="ps-4 py-3">
+                        <div class="fw-bold">Science</div>
+                        <div class="text-muted small">Earth Science</div>
+                    </td>
+                    <td class="align-middle text-center text-info fw-bold">20</td>
+                    <td class="align-middle text-center text-danger fw-bold">21</td>
+                    <td class="align-middle text-center text-success fw-bold">31</td>
+                    <td class="align-middle text-end pe-4"><i class="bi bi-gear"></i></td>
+                </tr>
+                <tr>
+                    <td class="ps-4 py-3">
+                        <div class="fw-bold">Automata Theory</div>
+                        <div class="text-muted small">Automata basics</div>
+                    </td>
+                    <td class="align-middle text-center text-info fw-bold">70</td>
+                    <td class="align-middle text-center text-danger fw-bold">67</td>
+                    <td class="align-middle text-center text-success fw-bold">0</td>
+                    <td class="align-middle text-end pe-4"><i class="bi bi-gear"></i></td>
+                </tr>
+                <tr>
+                    <td class="ps-4 py-3">
+                        <div class="fw-bold">Descriptive Statistics</div>
+                        <div class="text-muted small">Descriptive statistics CS604</div>
+                    </td>
+                    <td class="align-middle text-center text-info fw-bold">11</td>
+                    <td class="align-middle text-center text-danger fw-bold">2</td>
+                    <td class="align-middle text-center text-success fw-bold">2</td>
+                    <td class="align-middle text-end pe-4"><i class="bi bi-gear"></i></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+{% endblock content %}
 
-
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{# 4. If you need to customize the Left Sidebar (e.g. to set 'Home' as active) #}
+{% block left_sidebar_nav %}
+    {# You can copy the entire sidebar UL here if you need to change the 'active' class #}
+    {# Or, simpler: keep the sidebar in base.html and use logic there. #}
+    {# For now, leaving this block out means it will use the default sidebar from base.html #}
+    {{ block.super }}
+{% endblock left_sidebar_nav %}

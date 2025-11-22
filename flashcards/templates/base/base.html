@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tidbit Flashcards Dashboard{% endblock title %}</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'user/css/home_style.css' %}">
+
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+
+<nav class="navbar navbar-light bg-light fixed-top border-bottom border-dark">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn border-0 p-1" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#sidebar-container-left">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+
+            <a class="navbar-brand m-0 d-flex align-items-center" href="#">
+                <img src="{% static 'assets/tidbiticon.png' %}" width="30" height="30" alt="Tidbit Logo">
+            </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-bell fs-5 pointer-event"></i>
+            <i class="bi bi-person-circle fs-5 pointer-event"></i>
+
+            <div class="vr text-secondary mx-1"></div>
+
+            <button class="btn border-0 p-1" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#sidebar-container-right">
+                <i class="bi bi-arrow-bar-left fs-4"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+
+<div class="main-wrapper">
+    <div class="collapse d-lg-block show" id="sidebar-container-left">
+
+        <div class="sidebar-content d-flex flex-column flex-shrink-0 p-3 bg-light h-100">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active bg-gray" aria-current="page">
+                        <i class="bi bi-house-door me-2"></i>
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-dark">
+                        <i class="bi bi-folder me-2"></i>
+                        Your library
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-dark">
+                        <i class="bi bi-bell me-2"></i>
+                        Notifications
+                    </a>
+                </li>
+
+                <hr>
+                <h3 class="me-2 mb-0 fs-6 ms-3 mb-1">Flashcards</h3>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-dark">
+                        <i class="bi bi-card-text me-2"></i>
+                        Flashcards
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-dark">
+                        <i class="bi bi-bar-chart me-2"></i>
+                        Stats
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-dark">
+                        <i class="bi bi-plus-square me-2"></i>
+                        Add Flashcards
+                    </a>
+                </li>
+                <hr>
+
+                <h3 class="me-2 mb-0 fs-6 ms-3 mb-1">Decks</h3>
+{#                <!-- temp rani sila -->#}
+{#                <h3 class="me-2 mb-0 fs-6 ms-3 mb-1 mt-3">Automata</h3>#}
+{#                <h3 class="me-2 mb-0 fs-6 ms-3 mb-1 mt-3">Math</h3>#}
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-dark">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Add Decks
+                    </a>
+                </li>
+
+                <hr>
+            </ul>
+        </div>
+    </div>
+
+        {% block content %}
+            <h1>Welcome to the Dashboard</h1>
+            <p>Start by selecting a link from the sidebar.</p>
+        {% endblock content %}
+
+    <div class="collapse d-lg-block show" id="sidebar-container-right">
+        <div class="sidebar-content d-flex flex-column flex-shrink-0 p-3 bg-light h-100 border-start border-dark">
+            {% block right_sidebar_folders %}
+                <div class="d-flex align-items-center gap-4">
+                    <h3 class="me-2 mb-0 fs-6 ms-1 mb-1 text-dark">Folders</h3>
+                    <i class="bi bi-pencil text-dark"></i>
+                    <i class="bi bi-folder-plus text-dark"></i>
+                    <i class="bi bi-star text-dark"></i>
+                </div>
+                <hr>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark d-flex justify-content-between"
+                           data-bs-toggle="collapse" href="#foldersCollapse" role="button"
+                           aria-expanded="false" aria-controls="foldersCollapse">
+                            Automata
+                            <i class="bi bi-chevron-down"></i>
+                        </a>
+                        <div class="collapse" id="foldersCollapse">
+                            <ul class="nav flex-column ms-3 mt-2">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link text-dark">Turing Machine</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            {% endblock right_sidebar_folders %}
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block extra_js %}{% endblock extra_js %}
+
+</body>
+</html>
