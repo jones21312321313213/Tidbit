@@ -50,9 +50,9 @@ class ForgotPasswordSuccessView(View):
 
 # PROFILE Management
 class ProfileView(View):
-    template_name = 'tomake'
+    template_name = 'user/profile.html'
     def get(self, request):
-        return HttpResponse('Viewing profile')
+        return render(request, self.template_name)
 
 class ChangeEmailView(View):
     template_name = 'todo'
