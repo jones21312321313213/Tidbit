@@ -55,22 +55,17 @@ class ProfileView(View):
         return render(request, self.template_name)
 
 class ChangeEmailView(View):
-    template_name = 'todo'
+    template_name = 'user/change_email.html'
 
     def get(self,request):
-        return HttpResponse('Change email')
+        return render(request, self.template_name)
 
 class ChangePasswordView(View):
-    template_name = 'todo'
+    template_name = 'user/change_password.html'
 
     def get(self, request):
-        return HttpResponse('Change password')
+        return render(request, self.template_name)
 
-class ChangeUsernameView(View):
-    template_name = 'todo'
-
-    def get(self, request):
-        return HttpResponse('Change username')
 
 class HomePageView(View):
     template_name = 'user/home.html'
