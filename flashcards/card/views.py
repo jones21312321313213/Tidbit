@@ -64,3 +64,8 @@ class CardUpdateView(LoginRequiredMixin, UpdateView):
 class CardDeleteView(LoginRequiredMixin, DeleteView):
     pass
 
+class AddCardView(View):
+    template_name = 'card/add-card.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
