@@ -10,8 +10,6 @@ urlpatterns = [
     path('profile/settings/change-password/', views.ChangePasswordView.as_view(), name='change_password'),
     path('profile/settings/change-username/', views.ChangeUsernameView.as_view(), name='change_password'),
 
-<<<<<<< HEAD
-
     #Dont know if these below are part of user just remove them if not
 
     #Gibalhin ra nakos notifs - jm was here
@@ -24,8 +22,8 @@ urlpatterns = [
 
     #Folder
     path('folder/add', views.FolderCreateView.as_view(), name='folder'),
-]
-=======
+
+
     path('home/', views.HomePageView.as_view(),name='home'),
     path('register/', views.RegisterView.as_view(), name='register'),
     path('forgot-password/', views.ForgotPasswordView.as_view(), name='forgot_password'),
@@ -33,4 +31,4 @@ urlpatterns = [
     path('forgot-password/changing-password', views.ForgotPasswordChangePasswordView.as_view(), name='forgot_password_changepw'),
     path('forgot-password/success', views.ForgotPasswordSuccessView.as_view(), name='forgot_password_success'),
 ]
->>>>>>> main
+
