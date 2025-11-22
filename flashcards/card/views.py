@@ -69,3 +69,13 @@ class AddCardView(View):
 
     def get(self, request):
         return render(request, self.template_name)
+class ViewBack(View):
+    template_name = 'card/study_back.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+class ViewFront(View):
+    template_name = 'card/study_front.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
