@@ -1,0 +1,54 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{# 1. Override the title for this specific page #}
+{% block title %}Decks Due Today{% endblock title %}
+
+{# 3. The Main Content Block - This replaces the center area of base.html #}
+{% block content %}
+    {# MODIFIED: Changed col-md-5 to col-md-7 and increased max-width from 600px to 800px #}
+    <div class="mx-auto col-md-7 pt-4 px-5" style="min-height: 300px; max-width: 800px">
+
+        {# === START BORDERED CONTAINER === #}
+        <div class="p-4 rounded-3 border bg-white shadow-sm border-secondary w-100">
+
+            {# Header text centered like the image #}
+            <div class="text-center mb-4">
+                <h2 class="fw-normal">You have <span class="fw-bold text-danger">2 decks</span> due</h2>
+            </div>
+
+            <div class="d-grid gap-3">
+
+                {# Deck 1: Science #}
+                <a href="#" class="text-decoration-none text-dark border-bottom border-dark pb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="deck-info">
+                            <div class="fw-bold fs-5">Science</div>
+                            <div class="text-muted small">Earth Science</div>
+                        </div>
+                        <div class="due-status text-danger fw-bold fs-6 text-end">
+                            Due today
+                        </div>
+                    </div>
+                </a>
+
+                {# Deck 2: Automata #}
+                <a href="#" class="text-decoration-none text-dark pt-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="deck-info">
+                            <div class="fw-bold fs-5">Automata</div>
+                            <div class="text-muted small">Automata Basics</div>
+                        </div>
+                        <div class="due-status text-danger fw-bold fs-6 text-end">
+                            Due today
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+        {# === END BORDERED CONTAINER === #}
+
+    </div>
+{% endblock content %}
