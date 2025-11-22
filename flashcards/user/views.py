@@ -23,6 +23,31 @@ class RegisterView(View):
     def get(self, request):
         return render(request, self.template_name)
 
+
+class ForgotPasswordView(View):
+    template_name = 'user/forgot_password.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
+
+class ForgotPasswordCodeView(View):
+    template_name = 'user/forgot_password_code.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
+
+class ForgotPasswordChangePasswordView(View):
+    template_name = 'user/forgot_password_changepw.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
+
+class ForgotPasswordSuccessView(View):
+    template_name = 'user/forgot_password_success.html'
+
+    def get(self,request):
+        return render(request, self.template_name)
+
 # PROFILE Management
 class ProfileView(View):
     template_name = 'tomake'
