@@ -24,4 +24,5 @@ urlpatterns = [
     path('notifications/', include('notification.urls')),
     path('card/',include('card.urls'), name='card'),
     path('folder/',include('folder.urls'), name='folder'),
+    path('',include('django.contrib.auth.urls'))
 ]

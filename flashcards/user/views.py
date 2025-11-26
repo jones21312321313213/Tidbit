@@ -1,7 +1,8 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 # Create your views here.
 
@@ -14,8 +15,22 @@ class LandingPageView(View):
 class LoginView(View):
     template_name = 'user/login.html'
 
-    def get(self,request):
+    def get(self, request):
         return render(request, self.template_name)
+
+    def post(self, request):
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')   # home page
+        else:
+            messages.error(request, "Username or password is incorrect")
+            return redirect('login')
+
 
 class RegisterView(View):
     template_name = 'user/register.html'
