@@ -89,6 +89,11 @@ class HomePageView(View):
         return render(request, self.template_name)
 
 
+def logout_user(request):
+    logout(request)
+    messages.success(request,"Logged out successfully")
+    return redirect('login')
+
 #Dont know if these below are part of user functionalities can remove
 #Notification
 # Gibalhin nakos notif - jm was here
