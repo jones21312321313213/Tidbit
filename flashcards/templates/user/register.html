@@ -18,35 +18,41 @@
 
             <form method="POST" action="" class = "w-100">
                 {% csrf_token %}
-
-                <!-- Username -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Username</label>
                     {{ form.username }}
                 </div>
 
-                <!-- Email -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Email</label>
                     {{ form.email }}
                 </div>
 
-                <!-- Password -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Password</label>
                     {{ form.password1 }}
                 </div>
 
-                <!-- Confirm Password -->
                 <div class="mb-4">
                     <label class="form-label fw-semibold">Confirm Password</label>
                     {{ form.password2 }}
                 </div>
 
-                <!-- Submit Button -->
                 <button type="submit" class="btn btn-dark w-100">Submit</button>
 
-                <!-- Redirect -->
+                {% if form.errors %}
+                    <div class="alert alert-danger mt-3">
+                        <ul class="mb-0">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+
                 <div class="text-center mt-3">
                     <p class="m-0">
                         Already have an account?
