@@ -15,28 +15,46 @@
         <img src="{% static 'assets/tidbitlogo.png' %}" id="logo" alt="tidbit" style="width: 300px; height: 300px;">
         <h5 style = "margin-top: -90px;">Create account</h5>
         <div class="main border border-2 rounded p-4" style="width: 400px; height:auto;">
-            <form>
-                <div class="form-outline mb-4">
-                    <label class="form-label" for="form2Example1">Username</label>
-                    <input id="form2Example1" class="form-control" placeholder="username" />
+
+            <form method="POST" action="" class = "w-100">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Username</label>
+                    {{ form.username }}
                 </div>
 
-                <div class="form-outline mb-4">
-                    <label class="form-label" for="form2Example1">Email</label>
-                    <input id="form2Example2" type = "email" class="form-control" placeholder="Email" />
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Email</label>
+                    {{ form.email }}
                 </div>
 
-                <div class="form-password mb-4 password-container">
-                    <label class="form-label mb-1" for="passwordInput">Password</label>
-                    <input type="password" id="passwordInput" class="form-control" placeholder="password">
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Password</label>
+                    {{ form.password1 }}
                 </div>
 
-                <button type="button" class="btn btn-dark btn-block mb-4 w-100">Submit</button>
+                <!-- Confirm Password -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Confirm Password</label>
+                    {{ form.password2 }}
+                </div>
 
-                <div class="text-center">
-                    <p>Already have an account?<a href="{% url 'login' %}" class="ms-1">Click here</a></p>
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-dark w-100">Submit</button>
+
+                <!-- Redirect -->
+                <div class="text-center mt-3">
+                    <p class="m-0">
+                        Already have an account?
+                        <a href="{% url 'login' %}" class="fw-semibold ms-1">Click here</a>
+                    </p>
                 </div>
             </form>
+
         </div>
     </div>
 
@@ -44,3 +62,6 @@
 
 </body>
 </html>
+
+
+
