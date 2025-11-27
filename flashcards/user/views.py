@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from .forms import UserForm,CreateUserForm
 
 # Create your views here.
 
@@ -30,14 +31,6 @@ class LoginView(View):
         else:
             messages.error(request, "Username or password is incorrect")
             return redirect('login')
-
-
-class RegisterView(View):
-    template_name = 'user/register.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
-
 
 class ForgotPasswordView(View):
     template_name = 'user/forgot_password.html'
@@ -93,6 +86,20 @@ def logout_user(request):
     logout(request)
     messages.success(request,"Logged out successfully")
     return redirect('login')
+
+
+def registerPage(request):
+    form = CreateUserForm()
+
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+
+    context = {'form': form}
+    return render(request, 'user/register.html', context)
+
 
 #Dont know if these below are part of user functionalities can remove
 #Notification
