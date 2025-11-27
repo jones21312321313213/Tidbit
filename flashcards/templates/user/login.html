@@ -23,12 +23,12 @@
 
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form2Example1">Username</label>
-                    <input id="form2Example1" name = "username" class="form-control" placeholder="Enter username" />
+                    <input id="form2Example1" name = "username" class="form-control" placeholder="Enter username" value="{{ request.GET.username|default:'' }}"  /> <!-- the value = {} is for when user is successfully created naka butang naa daan ang username-->
                 </div>
 
                 <div class="form-password mb-4 password-container">
                     <label class="form-label mb-1" for="passwordInput">Password</label>
-                    <input type="password" name = "password" id="passwordInput" class="form-control" placeholder="Enter your password">
+                    <input type="password" name = "password" id="passwordInput" class="form-control" placeholder="Enter your password" value="{{ request.GET.password|default:'' }}" ><!-- the value = {} is for when user is successfully created naka butang naa daan ang password-->
                     <i class="bi bi-eye-slash password-toggle" id="togglePassword"></i>
                 </div>
 

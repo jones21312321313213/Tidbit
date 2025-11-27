@@ -2,7 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.urls import reverse
 from .forms import UserForm,CreateUserForm
 
 # Create your views here.
@@ -75,6 +77,7 @@ class ChangePasswordView(View):
         return render(request, self.template_name)
 
 
+#@login_required(login_url='login')
 class HomePageView(View):
     template_name = 'user/home.html'
 
@@ -95,7 +98,11 @@ def registerPage(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            # redirect to login page with username password already in the inputs
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            login_url = f"{reverse('login')}?username={username}&password={password}"
+            return redirect(login_url)
 
     context = {'form': form}
     return render(request, 'user/register.html', context)
