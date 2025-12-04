@@ -1,0 +1,15 @@
+<form method="post" action="{% url 'folder_create' %}">
+    {% csrf_token %}
+    <div class="modal-header">
+      <h5 class="modal-title">Add Folder</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <label for="folderName" class="form-label">Folder Name</label>
+      <input type="text" id="folderName" class="form-control" name="folder_name" placeholder="Enter folder name" required>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Create Folder</button>
+    </div>
+  </form>
+  

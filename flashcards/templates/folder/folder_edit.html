@@ -1,0 +1,23 @@
+<form method="post" action="{% url 'folder_edit_dropdown' %}">
+    {% csrf_token %}
+    <div class="modal-header">
+      <h5 class="modal-title">Edit Folder</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <!-- Dropdown to select folder -->
+      <label for="folderSelect" class="form-label">Select Folder</label>
+      <select id="folderSelect" class="form-select" name="folder_id" required>
+        {% for folder in folders %}
+          <option value="{{ folder.FolderID }}">{{ folder.name }}</option>
+        {% endfor %}
+      </select>
+  
+      <!-- Input for new name -->
+      <label for="newName" class="form-label mt-3">New Folder Name</label>
+      <input type="text" id="newName" class="form-control" name="folder_name" required>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-warning">Save Changes</button>
+    </div>
+</form>

@@ -23,6 +23,6 @@ urlpatterns = [
     path('deck/', include('deck.urls')),
     path('notifications/', include('notification.urls')),
     path('card/',include('card.urls'), name='card'),
-    path('folder/',include('folder.urls'), name='folder'),
+    path("folder/", include("folder.urls")), 
     path('',include('django.contrib.auth.urls'))
 ]

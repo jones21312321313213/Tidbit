@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -17,4 +17,6 @@ urlpatterns = [
     path('forgot-password/code', views.ForgotPasswordCodeView.as_view(), name='forgot_password_code'),
     path('forgot-password/changing-password', views.ForgotPasswordChangePasswordView.as_view(), name='forgot_password_changepw'),
     path('forgot-password/success', views.ForgotPasswordSuccessView.as_view(), name='forgot_password_success'),
+    
+    path("folder/", include("folder.urls")),
 ]
