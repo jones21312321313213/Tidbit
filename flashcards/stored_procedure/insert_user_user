@@ -1,0 +1,14 @@
+DELIMITER $$
+CREATE PROCEDURE insert_user_user(IN p_auth_user_id INT)
+BEGIN
+    INSERT INTO user_user (username, password, email, created_at)
+    SELECT username, password, email, date_joined
+    FROM auth_user
+    WHERE id = p_auth_user_id;
+END $$
+DELIMITER ;
+
+
+
+just copy this in and make this in ur mySql if you need this
+wat this do? copy the newlycreated user from auth_user and put it in user_user

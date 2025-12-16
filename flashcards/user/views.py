@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .forms import UserForm,CreateUserForm
 from folder.models import Folder
-
+from .procedures import insert_user_user
 # Create your views here.
 
 class LandingPageView(View):
@@ -105,7 +105,9 @@ def registerPage(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
+            auth_user = form.save()
+
+            insert_user_user(auth_user.id) #get id cause it is in the stored procedure
             # redirect to login page with username password already in the inputs
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
