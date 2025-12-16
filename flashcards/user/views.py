@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .forms import UserForm,CreateUserForm
 from folder.models import Folder
+from django.db import transaction
 
 # Create your views here.
 
@@ -105,6 +106,7 @@ def registerPage(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
+            #puts the data into the user_user aswell
             form.save()
             # redirect to login page with username password already in the inputs
             username = form.cleaned_data.get('username')
