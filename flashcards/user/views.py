@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from .forms import UserForm,CreateUserForm
+from folder.models import Folder
 
 # Create your views here.
 
@@ -84,6 +85,13 @@ class HomePageView(View):
     def get(self, request):
         return render(request, self.template_name)
 
+class HomePageView(View):
+    template_name = 'user/home.html'
+
+    def get(self, request):
+        # show all folders regardless of user
+        folders = Folder.objects.all()
+        return render(request, self.template_name, {'folders': folders})
 
 def logout_user(request):
     logout(request)

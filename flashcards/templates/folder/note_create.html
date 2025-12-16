@@ -1,0 +1,23 @@
+<form method="post" action="{% url 'note_create' %}">
+    {% csrf_token %}
+    <div class="modal-header">
+      <h5 class="modal-title">Create Note</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <!-- Input for note field_data -->
+      <input type="text" class="form-control" name="field_data" placeholder="Note name" required>
+
+      <!-- Dropdown to select folder -->
+      <select class="form-select mt-2" name="folder_id" required>
+        {% for folder in folders %}
+          <option value="{{ folder.FolderID }}">{{ folder.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-success">Create Note</button>
+    </div>
+</form>
+
+
