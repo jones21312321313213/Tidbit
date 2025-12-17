@@ -26,3 +26,4 @@ flashcards/flashcards/settings.py  # sensitive config
 # System files
 .DS_Store
 Thumbs.db
+flashcards/flashcards/settings.py
