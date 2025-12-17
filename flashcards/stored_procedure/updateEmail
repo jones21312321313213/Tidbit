@@ -1,0 +1,10 @@
+DELIMITER $$
+
+CREATE PROCEDURE update_userEmail(IN p_username VARCHAR(100), IN p_new_email VARCHAR(100))
+BEGIN
+	UPDATE user_user
+    SET email = p_new_email
+    WHERE username = p_username;
+END $$
+
+DELIMITER ;

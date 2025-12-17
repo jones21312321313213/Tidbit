@@ -8,3 +8,6 @@ BEGIN
 
 END$$
 DELIMITER ;
+
+just copy this in and make this in ur mySql if you need this
+wat this do? authenticates the user whether username and password is correct
