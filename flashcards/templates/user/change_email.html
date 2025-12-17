@@ -38,6 +38,11 @@
                         <div class="form-password mb-4 password-container">
                             <label class="form-label mb-1" for="currentPassword">Password</label>
                                <input type="password" id="currentPassword" name="current_password" class="form-control" placeholder="Enter current password" required>
+                            {% if error_password %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ error_password }}
+                                    </div>
+                            {% endif %}
                         </div>
 
                         <button type="submit" class="btn btn-dark w-100">Save Changes</button>
