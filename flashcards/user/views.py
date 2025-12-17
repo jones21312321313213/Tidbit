@@ -1,3 +1,4 @@
+from django.db import connection
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -7,7 +8,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .forms import UserForm,CreateUserForm
 from folder.models import Folder
-from .procedures import insert_user_user
+from .procedures import insert_user_user,loginUser
 # Create your views here.
 
 class LandingPageView(View):
@@ -26,14 +27,24 @@ class LoginView(View):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        user = authenticate(request, username=username, password=password)
+        # user = authenticate(request, username=username, password=password)
+        #
+        # if user is not None:
+        #     login(request, user)
+        #     return redirect('home')   # home page
+        # else:
+        #     messages.error(request, "Username or password is incorrect")
+        #     return redirect('login')
 
-        if user is not None:
-            login(request, user)
-            return redirect('home')   # home page
+        #for this to work u need to create loginUser in ur mysql which can be found on the stored_procedure dir
+        if loginUser(username, password):
+            request.session['username'] = username
+            return redirect('home')
         else:
-            messages.error(request, "Username or password is incorrect")
-            return redirect('login')
+            #message = "Invalid username or password"
+            messages.error(request, "Invalid username or password")
+
+        return render(request, self.template_name)
 
 class ForgotPasswordView(View):
     template_name = 'user/forgot_password.html'

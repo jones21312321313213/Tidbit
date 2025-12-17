@@ -1,0 +1,10 @@
+DELIMITER $$
+
+CREATE PROCEDURE LoginUser(IN p_username VARCHAR(100))
+BEGIN
+    SELECT password
+    FROM user_user
+    WHERE username = p_username;
+
+END$$
+DELIMITER ;
