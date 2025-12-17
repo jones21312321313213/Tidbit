@@ -1,8 +1,13 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-
-
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.urls import reverse
+from .forms import UserForm,CreateUserForm
+from folder.models import Folder
+from .procedures import insert_user_user
 # Create your views here.
 
 class LandingPageView(View):
@@ -14,15 +19,21 @@ class LandingPageView(View):
 class LoginView(View):
     template_name = 'user/login.html'
 
-    def get(self,request):
-        return render(request, self.template_name)
-
-class RegisterView(View):
-    template_name = 'user/register.html'
-
     def get(self, request):
         return render(request, self.template_name)
 
+    def post(self, request):
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')   # home page
+        else:
+            messages.error(request, "Username or password is incorrect")
+            return redirect('login')
 
 class ForgotPasswordView(View):
     template_name = 'user/forgot_password.html'
@@ -67,11 +78,44 @@ class ChangePasswordView(View):
         return render(request, self.template_name)
 
 
+#@login_required(login_url='login')
 class HomePageView(View):
     template_name = 'user/home.html'
 
     def get(self, request):
         return render(request, self.template_name)
+
+class HomePageView(View):
+    template_name = 'user/home.html'
+
+    def get(self, request):
+        # show all folders regardless of user
+        folders = Folder.objects.all()
+        return render(request, self.template_name, {'folders': folders})
+
+def logout_user(request):
+    logout(request)
+    messages.success(request,"Logged out successfully")
+    return redirect('login')
+
+
+def registerPage(request):
+    form = CreateUserForm()
+
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            auth_user = form.save()
+
+            insert_user_user(auth_user.id) #get id cause it is in the stored procedure
+            # redirect to login page with username password already in the inputs
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            login_url = f"{reverse('login')}?username={username}&password={password}"
+            return redirect(login_url)
+
+    context = {'form': form}
+    return render(request, 'user/register.html', context)
 
 
 #Dont know if these below are part of user functionalities can remove
