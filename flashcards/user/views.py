@@ -1,15 +1,23 @@
-from django.db import connection
-from django.http import HttpResponse
+
 from django.shortcuts import render, redirect
 from django.views import View
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from .forms import UserForm,CreateUserForm
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.utils.decorators import method_decorator
+
+
+from .forms import UserForm, CreateUserForm, ChangeEmailForm
 from folder.models import Folder
-from .procedures import insert_user_user,loginUser
+from .procedures import insert_user_user, loginUser, update_user_email,verify_user_password
+
+
 # Create your views here.
+
 
 class LandingPageView(View):
     template_name = 'user/index.html'
@@ -26,6 +34,7 @@ class LoginView(View):
     def post(self, request):
         username = request.POST.get("username")
         password = request.POST.get("password")
+        next_url = request.POST.get('next') or request.GET.get('next')  # <-- read the next parameter
 
         # user = authenticate(request, username=username, password=password)
         #
@@ -38,8 +47,16 @@ class LoginView(View):
 
         #for this to work u need to create loginUser in ur mysql which can be found on the stored_procedure dir
         if loginUser(username, password):
-            request.session['username'] = username
-            return redirect('home')
+            # request.session['username'] = username
+            #need this for user to be authenticated using Django so that we can go to next views
+            #because we are using LoginRequiredMixin
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                # optionally create a Django user if it doesn't exist
+                user = User.objects.create_user(username=username, password=password)
+            login(request, user)  # <-- attaches user to session
+            return redirect(next_url or 'home')
         else:
             #message = "Invalid username or password"
             messages.error(request, "Invalid username or password")
@@ -70,40 +87,6 @@ class ForgotPasswordSuccessView(View):
     def get(self,request):
         return render(request, self.template_name)
 
-# PROFILE Management
-class ProfileView(View):
-    template_name = 'user/profile.html'
-    def get(self, request):
-        return render(request, self.template_name)
-
-class ChangeEmailView(View):
-    template_name = 'user/change_email.html'
-
-    def get(self,request):
-        return render(request, self.template_name)
-
-class ChangePasswordView(View):
-    template_name = 'user/change_password.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
-
-
-#@login_required(login_url='login')
-class HomePageView(View):
-    template_name = 'user/home.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
-
-class HomePageView(View):
-    template_name = 'user/home.html'
-
-    def get(self, request):
-        # show all folders regardless of user
-        folders = Folder.objects.all()
-        return render(request, self.template_name, {'folders': folders})
-
 def logout_user(request):
     logout(request)
     messages.success(request,"Logged out successfully")
@@ -129,23 +112,72 @@ def registerPage(request):
     return render(request, 'user/register.html', context)
 
 
-#Dont know if these below are part of user functionalities can remove
-#Notification
-# Gibalhin nakos notif - jm was here
-# class NotificationView(View):
-#     template_name = 'todo'
-#
-#     def get(self, request):
-#         return HttpResponse('Viewing notification')
-#
 
-#Deck
-# class DeckCreateView(View):
-#     template_name = 'todo'
+# PROFILE Management
+class ProfileView(LoginRequiredMixin,View):
+    login_url = 'login'
+    template_name = 'user/profile.html'
+    def get(self, request):
+        user =request.user
 
-#     def get(self, request):
-#         return HttpResponse('creating deck')
+        context = {
+            'username': user.username,
+            'email': user.email,
+            'created_at': user.date_joined,
+        }
+        return render(request, self.template_name,context)
 
-#Card
+class ChangeEmailView(LoginRequiredMixin,View):
+    login_url = 'login'
+    template_name = 'user/change_email.html'
 
+    def get(self,request):
+        # email = User.objects.get(username=request.session['username'])
+        # form = UserForm(instance=email)
+        user = request.user
+        initial_data = {'email': user.email}
+        form = ChangeEmailForm(initial=initial_data)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self,request):
+        # email = User.objects.get(username=request.session['username'])
+        # form = UserForm(request.POST, instance=email)
+
+        user = request.user
+        form = ChangeEmailForm(request.POST)
+        current_password = request.POST.get('current_password')
+
+        if not current_password or not verify_user_password(user.username, current_password):
+            messages.error(request, "Current password is incorrect")
+            return render(request, self.template_name, {'form': form})
+
+        if form.is_valid():
+            new_email = form.cleaned_data.get('email')
+            user.email = new_email
+            user.save()
+
+            update_user_email(user.username, new_email)
+            messages.success(request,"Email successfully updated")
+            return redirect('profile')
+
+
+        return render(request, self.template_name,{'form':form})
+
+
+class ChangePasswordView(LoginRequiredMixin,View):
+    login_url =  'login'
+    template_name = 'user/change_password.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+#LoginRequiredMixin does not allow user to go to that page without being logged in
+class HomePageView(LoginRequiredMixin,View):
+    login_url = 'login'
+    template_name = 'user/home.html'
+
+    def get(self, request):
+        folders = Folder.objects.all()
+        return render(request, self.template_name, {'folders': folders})
 

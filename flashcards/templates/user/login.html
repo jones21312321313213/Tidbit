@@ -20,7 +20,8 @@
         <div class="main border border-2 rounded p-4" style="width: 400px; height:auto;">
             <form method = "POST" action = "">
                 {% csrf_token %}
-
+                <!--     hidden input for next           -->
+                <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form2Example1">Username</label>
                     <input id="form2Example1" name = "username" class="form-control" placeholder="Enter username" value="{{ request.GET.username|default:'' }}"  /> <!-- the value = {} is for when user is successfully created naka butang naa daan ang username-->

@@ -20,3 +20,21 @@ def loginUser(username, password):
 
     hashed_password = result[0]
     return check_password(password, hashed_password)
+
+def update_user_email(username, new_email):
+    with connection.cursor() as cursor:
+        cursor.callproc("update_userEmail", [username, new_email])
+    connection.commit()
+
+
+def verify_user_password(username, plain_password):
+    #will just use the LoginUser to authenticate since that stored procedure will return a hash password
+    with connection.cursor() as cursor:
+        cursor.callproc('LoginUser', [username])
+        result = cursor.fetchone()
+        if not result:
+            return False  # user not found
+        db_password = result[0]
+
+    return check_password(plain_password, db_password)
+
