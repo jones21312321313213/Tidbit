@@ -146,10 +146,11 @@ class ChangeEmailView(LoginRequiredMixin,View):
         user = request.user
         form = ChangeEmailForm(request.POST)
         current_password = request.POST.get('current_password')
+        error_password = None  # placeholder for password errors
 
         if not current_password or not verify_user_password(user.username, current_password):
-            messages.error(request, "Current password is incorrect")
-            return render(request, self.template_name, {'form': form})
+            error_password = "Current password is incorrect"
+            return render(request, self.template_name, {'form': form, 'error_password': error_password})
 
         if form.is_valid():
             new_email = form.cleaned_data.get('email')
@@ -161,7 +162,7 @@ class ChangeEmailView(LoginRequiredMixin,View):
             return redirect('profile')
 
 
-        return render(request, self.template_name,{'form':form})
+        return render(request, self.template_name,{'form': form,})
 
 
 class ChangePasswordView(LoginRequiredMixin,View):
