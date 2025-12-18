@@ -1,30 +1,43 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from django.http import HttpResponse
+from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Notification
 
-# Check your template path and correct this string if necessary!
-# Example using 'user/notification_list.html' as previously discussed:
-class NotificationListView(View):
+class NotificationListView(LoginRequiredMixin, View):
     template_name = 'notifications/notification_list.html'
+    login_url = 'login'
 
     def get(self, request):
-        # In a real app, you would fetch the user's notifications here
-        # For now, pass an empty list or mock data to avoid template errors
+        # Now request.user is a proper 'User' instance, not a string
+        user_notifications = Notification.objects.filter(user=request.user)
+        
+        filter_by = request.GET.get('filter', 'all')
+        qs = user_notifications.order_by('-schedule')
+        
+        if filter_by == 'unread':
+            qs = qs.filter(status=False)
+        elif filter_by == 'read':
+            qs = qs.filter(status=True)
+
         context = {
-            'notifications': [], # Ensure this key exists for the template loop
-            'message': 'Viewing all notifications'
+            'notifications': qs,
+            'message': f'Viewing {filter_by} notifications',
+            'filter': filter_by,
+            'counts': {
+                'all': user_notifications.count(),
+                'unread': user_notifications.filter(status=False).count(),
+                'read': user_notifications.filter(status=True).count(),
+            }
         }
         return render(request, self.template_name, context)
 
-
-# View to mark a specific notification as read
-class NotificationMarkAsReadView(View):
+class NotificationMarkAsReadView(LoginRequiredMixin, View):
     def post(self, request, pk):
+        # get_object_or_404 ensures the notification belongs to the logged-in user
+        notification = get_object_or_404(Notification, pk=pk, user=request.user)
+        notification.status = True
+        notification.save()
 
-        # Logic to mark Notification with pk as read goes here
-        print(f"Notification {pk} marked as read.")
-
-        # Redirects back to the list using the URL name 'notification_list'
-        return redirect('notification_list')
-
-    # ... (rest of the class)
+        next_filter = request.POST.get('filter', 'all')
+        return redirect(f"{reverse('notification_list')}?filter={next_filter}")
