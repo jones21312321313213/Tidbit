@@ -1,0 +1,11 @@
+DELIMITER $$
+
+CREATE PROCEDURE get_userInfo(IN p_username VARCHAR(150))
+BEGIN
+    SELECT userId, username,email,created_at
+    FROM user_user
+    WHERE username = p_username
+    LIMIT 1;
+END $$
+
+DELIMITER ;
