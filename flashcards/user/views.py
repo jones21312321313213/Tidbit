@@ -13,7 +13,7 @@ from django.contrib.auth.views import PasswordResetConfirmView
 from .forms import UserForm, CreateUserForm, ChangeEmailForm
 from .procedures import insert_user_user, loginUser, update_user_email,verify_user_password,update_userPassword,get_userInfo
 from .mixins import LoginRequiredMessageMixin
-
+from deck.models import Deck
 
 from folder.models import Folder
 # Create your views here.
@@ -214,5 +214,14 @@ class HomePageView(LoginRequiredMessageMixin,View):
 
     def get(self, request):
         folders = Folder.objects.all()
-        return render(request, self.template_name, {'folders': folders})
+        user_decks = Deck.objects.filter(user__username=request.user.username).order_by('-created_at')
+
+        context = {
+            'folders': folders, 
+            'decks': user_decks
+        }
+
+        return render(request, self.template_name, context)
+
+    
 

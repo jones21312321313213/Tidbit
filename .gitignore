@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 *.so
 *.cpython-313.pyc
+*.Cython-*
 
 # Virtual environment
 .venv/
@@ -27,3 +28,5 @@ flashcards/flashcards/settings.py  # sensitive config
 # System files
 .DS_Store
 Thumbs.db
+flashcards/card/__pycache__/__init__.cpython-313.pyc
+
