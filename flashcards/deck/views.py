@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from .models import Deck
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
-
+from django.views.generic import DeleteView
 from user.models import User as CustomUser
 
 class DeckCreateView(LoginRequiredMixin, CreateView):
@@ -21,14 +21,28 @@ class DeckCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class DeckListView(ListView):
+class DeckListView(LoginRequiredMixin, View):
     template_name = 'deck/deck_view.html'
 
-    def get(self,request):
-        # # Get all decks for the logged-in user
-        # decks = Deck.objects.filter(user=request.user).order_by('-created_at')
-        # return render(request, self.template_name, {'decks': decks})
-        return render(request, self.template_name)
+    # def get(self,request):
+    #     # # Get all decks for the logged-in user
+    #     # decks = Deck.objects.filter(user=request.user).order_by('-created_at')
+    #     # return render(request, self.template_name, {'decks': decks})
+    #     return render(request, self.template_name)
+
+    def get(self, request, slug):
+        custom_user = get_object_or_404(
+            CustomUser,
+            username=request.user.username
+        )
+
+        deck = get_object_or_404(
+            Deck,
+            slug=slug,
+            user=custom_user
+        )
+
+        return render(request, self.template_name, {'deck': deck})
 
     
 
@@ -41,3 +55,18 @@ class DeckUpdateView(View):
     #
     # def get(self, request, pk):
     #     return HttpResponse(f'Viewing deck {pk}')
+
+
+class DeckDeleteView(LoginRequiredMixin, DeleteView):
+
+    model = Deck
+    success_url = reverse_lazy('home')  # Redirect back to home after deletion
+
+    def get_object(self, queryset=None):
+        """Ensure only the logged-in user's deck can be deleted"""
+        custom_user = get_object_or_404(CustomUser, username=self.request.user.username)
+        return get_object_or_404(
+            Deck,
+            slug=self.kwargs['slug'],
+            user=custom_user
+        )

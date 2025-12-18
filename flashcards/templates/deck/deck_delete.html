@@ -1,0 +1,16 @@
+<form method="post" action="{% url 'deck_delete' deck.slug %}">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h5 class="modal-title">Delete Deck</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to delete the deck "<strong>{{ deck.name }}</strong>"?</p>
+        <p class="text-muted small mb-0">This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+

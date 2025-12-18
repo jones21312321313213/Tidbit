@@ -25,14 +25,51 @@
                 {% for deck in decks %}
                 <tr>
                     <td class="ps-4 py-3">
-                        <div class="fw-bold">{{ deck.name }}</div>
+                        <div class="fw-bold">
+                            <a href="{% url 'deck_detail' deck.slug %}" class="fw-bold text-dark text-decoration-none">
+                                {{ deck.name }}
+                            </a>
+                        </div>
                         <div class="text-muted small">{{ deck.description|truncatechars:30 }}</div>
                     </td>
                     <td class="align-middle text-center text-info fw-bold">0</td>
                     <td class="align-middle text-center text-danger fw-bold">0</td>
                     <td class="align-middle text-center text-success fw-bold">0</td>
-                    <td class="align-middle text-end pe-4"><i class="bi bi-gear"></i></td>
+                    <td class="align-middle text-end pe-4">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-light border-0"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                <i class="bi bi-gear"></i>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+
+                                <!-- Delete Deck -->
+                                <li>
+                                    <a class="dropdown-item text-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteDeckModal{{ deck.deckId }}"
+                                    style="cursor: pointer;">
+                                        <i class="bi bi-trash me-2"></i>
+                                        Delete Deck
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
+
+                <!-- DELETE DECK MODAL -->
+                <div class="modal fade" id="deleteDeckModal{{ deck.deckId }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            {% include 'deck/deck_delete.html' with deck=deck %}
+                        </div>
+                    </div>
+                </div>
+
                 {% empty %}
                 <tr>
                     <td colspan="5" class="text-center py-3">No decks found.</td>
