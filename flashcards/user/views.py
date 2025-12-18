@@ -1,3 +1,4 @@
+from django.utils import timezone
 
 from django.shortcuts import render, redirect
 from django.views import View
@@ -10,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordResetConfirmView
 
+from card.models import Card
 from .forms import UserForm, CreateUserForm, ChangeEmailForm
 from .procedures import insert_user_user, loginUser, update_user_email,verify_user_password,update_userPassword,get_userInfo
 from .mixins import LoginRequiredMessageMixin
@@ -216,10 +218,20 @@ class HomePageView(LoginRequiredMessageMixin,View):
         folders = Folder.objects.all()
         user_decks = Deck.objects.filter(user__username=request.user.username).order_by('-created_at')
 
+        for deck in user_decks:
+            deck.stats = {
+                'new_count': Card.objects.filter(deck=deck, state=Card.State.New).count(),
+                'learn_count': Card.objects.filter(deck=deck,state__in=[Card.State.Learning, Card.State.Relearning]).count(),
+                'due_count': Card.objects.filter(deck=deck,state=Card.State.Review,next_review__lte=timezone.now()).count(),
+            }
+
         context = {
             'folders': folders, 
-            'decks': user_decks
+            'decks': user_decks,
+            'first_deck': user_decks.first(),
         }
+
+
 
         return render(request, self.template_name, context)
 

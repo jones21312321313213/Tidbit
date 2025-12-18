@@ -3,7 +3,7 @@
 {% block title %}{{ deck.name }} | Stats Overview{% endblock title %}
 
 {% block content %}
-<div class="mx-auto col-md-7 pt-4 px-5" style="min-height: 300px; max-width: 1000px">
+<div class="mx-auto col-md-7 pt-4 px-5" style="min-width: 600px; min-height: 300px; max-width: 1000px">
     <div class="card shadow-sm">
         <div class="card-body text-center">
 
@@ -20,21 +20,21 @@
                         <div class="text-center mx-4">
                             <div class="small text-muted">New:</div>
                             <div class="h5 text-primary">
-                                {{ deck.new|default:0 }}
+                                {{ stat.new_count |default:0 }}
                             </div>
                         </div>
 
                         <div class="text-center mx-4">
                             <div class="small text-muted">Learning:</div>
                             <div class="h5 text-danger">
-                                {{ deck.learn|default:0 }}
+                                {{ stat.learn_count |default:0 }}
                             </div>
                         </div>
 
                         <div class="text-center mx-4">
                             <div class="small text-muted">To Review:</div>
                             <div class="h5 text-success">
-                                {{ deck.due|default:0 }}
+                                {{ stat.due_count |default:0 }}
                             </div>
                         </div>
                     </div>

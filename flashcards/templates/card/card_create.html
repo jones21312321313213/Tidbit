@@ -1,0 +1,118 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Add Flashcard{% endblock title %}
+
+{% block content %}
+    <div class="mx-auto col-md-8 pt-4 px-5" style="max-width: 1000px; min-width: 500px;">
+        <h1 class="mb-3 ms-1">Add Flashcard</h1>
+
+        <div class="card shadow-sm border border-secondary bg-white">
+            <div class="card-body p-4">
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row mb-4">
+
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="typeSelect" class="form-label fw-bold">Type</label>
+                            <select class="form-select border-dark"
+                                    id="typeSelect"
+                                    style="height: 40px;"
+                                    onchange="window.location.href=this.value;">
+
+                                <option value="{% url 'create_basic_card' deck.slug %}"
+                                        {% if card_type == 'basic' %}selected{% endif %}>
+                                    BASIC
+                                </option>
+                                <option value="{% url 'create_identification_card' deck.slug %}"
+                                        {% if card_type == 'identification' %}selected{% endif %}>
+                                    IDENTIFICATION
+                                </option>
+                                <option value="{% url 'create_image_card' deck.slug %}"
+                                        {% if card_type == 'image' %}selected{% endif %}>
+                                    IMAGE
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="deckSelect" class="form-label fw-bold">Deck</label>
+                            <select class="form-select border-dark"
+                                    id="deckSelect"
+                                    style="height: 40px;"
+                                    onchange="window.location.href=this.value;">
+
+                                {% for user_deck in user_decks %}
+                                    <option value="{% if card_type == 'basic' %}{% url 'create_basic_card' user_deck.slug %}{% elif card_type == 'identification' %}{% url 'create_identification_card' user_deck.slug %}{% else %}{% url 'create_image_card' user_deck.slug %}{% endif %}"
+                                            {% if user_deck.slug == deck.slug %}selected{% endif %}>
+                                        {{ user_deck.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    {% for field in form %}
+                        {% if field.name != 'deck' %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <div class="form-text text-muted small">{{ field.help_text }}</div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ field.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            {{ field.as_hidden }}
+                        {% endif %}
+                    {% endfor %}
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-dark btn-lg">ADD</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function wrapCloze() {
+        const frontField = document.getElementById('id_front_field');
+            if (!frontField) return;
+
+            const start = frontField.selectionStart;
+            const end = frontField.selectionEnd;
+
+        if (start === end) return;
+            const text = frontField.value;
+            const selectedText = text.substring(start, end);
+
+        const replacement = "\{\{" +selectedText + "\}\}"
+        frontField.value = text.substring(0, start) + replacement + text.substring(end);
+
+        frontField.focus();
+        frontField.selectionStart = start;
+        frontField.selectionEnd = end + 4;
+        }
+
+        document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'c' || e.key === 'C')) {
+            const frontField = document.getElementById('id_front_field');
+        if (document.activeElement === frontField) {
+        e.preventDefault();
+        wrapCloze();
+        }}});
+    </script>
+{% endblock content %}
