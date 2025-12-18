@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+    <div class="d-flex flex-column align-items-center justify-content-center h-100">
+        <div class="text-center">
+            <h1 class="display-4">Congratulations!</h1>
+            <p class="lead">You have finished reviewing this deck for now.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary btn-lg mt-3">Back to Home</a>
+        </div>
+    </div>
+{% endblock %}

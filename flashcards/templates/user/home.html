@@ -10,7 +10,7 @@
         <h1 class="ms-3 text-left">Decks</h1>
 
         <div class="p-1 rounded-3 border bg-white shadow-sm border-secondary w-100" 
-            style="max-height: 700px; overflow-y: auto;">
+            style="min-width:600px; max-height: 700px; overflow-y: auto;">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                 <tr>
@@ -32,9 +32,9 @@
                         </div>
                         <div class="text-muted small">{{ deck.description|truncatechars:30 }}</div>
                     </td>
-                    <td class="align-middle text-center text-info fw-bold">0</td>
-                    <td class="align-middle text-center text-danger fw-bold">0</td>
-                    <td class="align-middle text-center text-success fw-bold">0</td>
+                    <td class="align-middle text-center text-info fw-bold">{{ deck.stats.new_count |default:0}}</td>
+                    <td class="align-middle text-center text-danger fw-bold">{{ deck.stats.learn_count |default:0}}</td>
+                    <td class="align-middle text-center text-success fw-bold">{{ deck.stats.due_count |default:0}}</td>
                     <td class="align-middle text-end pe-4">
                         <div class="dropdown">
                             <button class="btn btn-sm"
