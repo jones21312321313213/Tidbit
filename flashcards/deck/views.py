@@ -47,14 +47,25 @@ class DeckListView(LoginRequiredMixin, View):
     
 
 
-class DeckUpdateView(View):
 
-    def get_url(self):
-        return redirect(reverse('review', kwargs={'slug': self.kwargs['slug']}))
-    # template_name = 'todo'
-    #
-    # def get(self, request, pk):
-    #     return HttpResponse(f'Viewing deck {pk}')
+
+class DeckUpdateView(LoginRequiredMixin, UpdateView):
+    model = Deck
+    template_name = 'deck/deck_edit.html'
+    fields = ['name', 'description']  # Fields to update
+
+    def get_object(self, queryset=None):
+        # Only allow the owner to edit
+        custom_user = get_object_or_404(CustomUser, username=self.request.user.username)
+        return get_object_or_404(
+            Deck,
+            slug=self.kwargs['slug'],
+            user=custom_user
+        )
+
+    def get_success_url(self):
+        # Redirect back to the deck view page after edit
+        return reverse('deck_detail', kwargs={'slug': self.object.slug})
 
 
 class DeckDeleteView(LoginRequiredMixin, DeleteView):
