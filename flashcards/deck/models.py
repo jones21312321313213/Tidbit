@@ -12,9 +12,10 @@ class Deck(models.Model):
     slug = models.SlugField(max_length=120, blank=True, unique=True)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug or self.name != getattr(self, '_original_name', None):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+        self._original_name = self.name
 
     def __str__(self):
         return f"{self.deckId} {self.name} {self.description} {self.user.username}"

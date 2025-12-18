@@ -1,35 +1,72 @@
 {% extends "base/base.html" %}
 
-{% block title %}Stats Overview{% endblock title %}
+{% block title %}{{ deck.name }} | Stats Overview{% endblock title %}
 
 {% block content %}
-    <div class="mx-auto col-md-7 pt-4 px-5" style="min-height: 300px; max-width: 1000px">
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h2 class="card-title mb-1">Automata Theory</h2>
-                <p class="text-muted mb-4">Automata Basics</p>
+<div class="mx-auto col-md-7 pt-4 px-5" style="min-width: 600px; min-height: 300px; max-width: 1000px">
+    <div class="card shadow-sm">
+<div class="mx-auto col-md-7 pt-4 px-5" style="min-height: 300px; max-width: 1000px">
+    <div class="card shadow-sm position-relative"> <!-- position-relative allows absolute children -->
+        <div class="card-body text-center">
 
-                <div class="card mx-auto" style="max-width:720px;">
-                    <div class="card-body py-4">
-                        <div class="d-flex justify-content-center align-items-center mb-3">
-                            <div class="text-center mx-4">
-                                <div class="small text-muted">New:</div>
-                                <div class="h5 text-primary">70</div>
-                            </div>
-                            <div class="text-center mx-4">
-                                <div class="small text-muted">Learning:</div>
-                                <div class="h5 text-danger">67</div>
-                            </div>
-                            <div class="text-center mx-4">
-                                <div class="small text-muted">To Review:</div>
-                                <div class="h5 text-success">0</div>
+            <!-- Deck Name -->
+            <h2 class="card-title mb-1">{{ deck.name }}</h2>
+
+            <!-- Edit pencil icon fixed in top-right of card-body -->
+            <i class="bi bi-pencil text-dark edit-deck"
+               style="cursor:pointer; position:absolute; top:16px; right:16px; font-size:1.2rem;"
+               title="Edit Deck"
+               data-url="{% url 'deck_update' deck.slug %}"></i>
+
+            <!-- Deck Description -->
+            <p class="text-muted mb-4">{{ deck.description }}</p>
+
+            <div class="card mx-auto" style="max-width:720px;">
+                <div class="card-body py-4">
+
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                        <div class="text-center mx-4">
+                            <div class="small text-muted">New:</div>
+                            <div class="h5 text-primary">
+                                {{ stat.new_count |default:0 }}
                             </div>
                         </div>
 
-                        <a href="#" class="btn btn-dark btn-block" style="border-radius:6px;">Study Now</a>
+                        <div class="text-center mx-4">
+                            <div class="small text-muted">Learning:</div>
+                            <div class="h5 text-danger">
+                                {{ stat.learn_count |default:0 }}
+                            </div>
+                        </div>
+
+                        <div class="text-center mx-4">
+                            <div class="small text-muted">To Review:</div>
+                            <div class="h5 text-success">
+                                {{ stat.due_count |default:0 }}
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Study Button -->
+                    <a href="{% url 'review' deck.slug %}"
+                       class="btn btn-dark btn-block"
+                       style="border-radius:6px;">
+                        Study Now
+                    </a>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- JS to handle pencil click safely -->
+<script>
+document.querySelectorAll('.edit-deck').forEach(icon => {
+    icon.addEventListener('click', function() {
+        window.location.href = this.dataset.url;
+    });
+});
+</script>
+
 {% endblock content %}

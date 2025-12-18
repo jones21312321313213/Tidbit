@@ -23,7 +23,7 @@
                 <i class="bi bi-list fs-4"></i>
             </button>
 
-            <a class="navbar-brand m-0 d-flex align-items-center" href="#">
+            <a class="navbar-brand m-0 d-flex align-items-center" href="{% url 'home' %}">
                 <img src="{% static 'assets/tidbiticon.png' %}" width="30" height="30" alt="Tidbit Logo">
             </a>
         </div>
@@ -52,7 +52,7 @@
         <div class="sidebar-content d-flex flex-column flex-shrink-0 p-3 bg-light h-100 border-end border-dark">
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="#" class="nav-link active bg-gray" aria-current="page">
+                    <a href="{% url 'home' %}" class="nav-link active bg-gray" aria-current="page">
                         <i class="bi bi-house-door me-2"></i>
                         Home
                     </a>
@@ -75,23 +75,25 @@
                 <hr>
                 <h3 class="me-2 mb-0 fs-6 ms-3 mb-1">Flashcards</h3>
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-dark">
+                    <a href="{% url 'card_browse' %}" class="nav-link text-dark">
                         <i class="bi bi-card-text me-2"></i>
-                        Flashcards
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-dark">
-                        <i class="bi bi-bar-chart me-2"></i>
-                        Stats
+                        Browse Flashcards
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-dark">
-                        <i class="bi bi-plus-square me-2"></i>
-                        Add Flashcards
-                    </a>
+                    {% if deck %}
+                        <a href="{% url 'create_basic_card' deck.slug %}" class="nav-link text-dark">
+                            <i class="bi bi-plus-square me-2"></i>
+                            Add Flashcards
+                        </a>
+
+                    {% elif first_deck %}
+                        <a href="{% url 'create_basic_card' first_deck.slug %}" class="nav-link text-dark">
+                            <i class="bi bi-plus-square me-2"></i>
+                            Add Flashcards
+                        </a>
+                    {% endif %}
                 </li>
                 <hr>
 
@@ -100,7 +102,7 @@
 {#                <h3 class="me-2 mb-0 fs-6 ms-3 mb-1 mt-3">Automata</h3>#}
 {#                <h3 class="me-2 mb-0 fs-6 ms-3 mb-1 mt-3">Math</h3>#}
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-dark">
+                    <a href="{% url 'deck_create' %}" class="nav-link text-dark">
                         <i class="bi bi-plus-circle me-2"></i>
                         Add Decks
                     </a>
