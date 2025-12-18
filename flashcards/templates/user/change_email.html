@@ -10,7 +10,8 @@
             </a>
             <div class="col-md-6">
                 <div class="details border border-2 rounded p-4 mt-5">
-                    <form>
+                    <form method = "POST">
+                        {% csrf_token %}
                         <div class="row mb-3">
                             <div class="col-6">
                                 <label class="form-label" for="userId">UserId</label>
@@ -21,16 +22,30 @@
                         </div>
 
                         <div class="form-outline mb-4">
-                            <label class="form-label" for="email">New Email</label>
-                            <input id="email" class="form-control" placeholder="johndoe@gmail.com" readonly />
+                            <label class="form-label" for = "userId">New Email</label>
+<!--                            <input id="email" name="email" class="form-control" placeholder="exmple@example.example" value="{{ form.email.value|default_if_none:'' }}" />-->
+                                 {{ form.email }}
+<!--                            {{ form.email.errors }}-->
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                         </div>
 
                         <div class="form-password mb-4 password-container">
-                            <label class="form-label mb-1" for="passwordInput">Password</label>
-                            <input type="password" id="passwordInput" class="form-control" placeholder="*****" readonly>
+                            <label class="form-label mb-1" for="currentPassword">Password</label>
+                               <input type="password" id="currentPassword" name="current_password" class="form-control" placeholder="Enter current password" required>
+                            {% if error_password %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ error_password }}
+                                    </div>
+                            {% endif %}
                         </div>
 
-                        <button type="button" class="btn btn-dark w-100">Save Changes</button>
+                        <button type="submit" class="btn btn-dark w-100">Save Changes</button>
                     </form>
                 </div>
             </div>
