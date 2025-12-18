@@ -18,6 +18,17 @@
     <!-- TODO: One of the problems for this is when you try to zoom in and then scroll up it wont show the icon/logo anymore -->
         <img src="{% static 'assets/tidbitlogo.png' %}" id="logo" alt="tidbit" >
         <div class="main border border-2 rounded p-4" style="width: 400px; height:auto;">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
             <form method = "POST" action = "">
                 {% csrf_token %}
                 <!--     hidden input for next           -->
@@ -46,7 +57,7 @@
 
                 <div class="row mb-4">
                     <div class="col">
-                        <a href="{% url 'forgot_password' %}">Forgot password?</a>
+                        <a href="{% url 'reset_password' %}">Forgot password?</a>
                     </div>
                 </div>
 

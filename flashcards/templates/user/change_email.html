@@ -17,13 +17,12 @@
                                 <label class="form-label" for="userId">UserId</label>
                             </div>
                             <div class="col-6">
-                                <input id="userId" class="form-control" placeholder="123123" readonly />
+                                <input id="userId" class="form-control" value = "{{userId}}" readonly />
                             </div>
                         </div>
 
                         <div class="form-outline mb-4">
                             <label class="form-label" for = "userId">New Email</label>
-<!--                            <input id="email" name="email" class="form-control" placeholder="exmple@example.example" value="{{ form.email.value|default_if_none:'' }}" />-->
                                  {{ form.email }}
 <!--                            {{ form.email.errors }}-->
                                 {% if form.email.errors %}
