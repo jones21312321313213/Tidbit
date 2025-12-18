@@ -4,6 +4,8 @@ __pycache__/
 *.pyo
 *.pyd
 *.so
+*.cpython-313.pyc
+*.Cython-*
 
 # Virtual environment
 .venv/

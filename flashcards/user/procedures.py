@@ -38,3 +38,27 @@ def verify_user_password(username, plain_password):
 
     return check_password(plain_password, db_password)
 
+
+def update_userPassword(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("update_userPassword", [username])
+    connection.commit()
+
+
+
+def get_userInfo(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("get_userInfo", [username])
+        row = cursor.fetchone()
+
+    if not row:
+        return None
+
+    return {
+        "userId": row[0],
+        "username": row[1],
+        "email": row[2],
+        "created_at": row[3],
+    }
+
+
