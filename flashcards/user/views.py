@@ -38,26 +38,25 @@ class LoginView(View):
 
         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-            return redirect('home')   # home page
-        else:
-            messages.error(request, "Username or password is incorrect")
-            return redirect('login')
+        # if user is not None:
+        #     login(request, user)
+        #     return redirect('home')   # home page
+        # else:
+        #     messages.error(request, "Username or password is incorrect")
+        #     return redirect('login')
 
         #for this to work u need to create loginUser in ur mysql which can be found on the stored_procedure dir
-        # if loginUser(username, password):
-        #     # request.session['username'] = username
-        #     #need this for user to be authenticated using Django so that we can go to next views
-        #     #because we are using LoginRequiredMixin
-        #
-        #
-        #     user = User.objects.get(username=username)
-        #     login(request, user)  # <-- attaches user to session
-        #     return redirect(next_url or 'home')
-        # else:
-        #     #message = "Invalid username or password"
-        #     messages.error(request, "Invalid username or password")
+        if loginUser(username, password):
+            # request.session['username'] = username
+            #need this for user to be authenticated using Django so that we can go to next views
+            #because we are using LoginRequiredMixin
+
+            user = User.objects.get(username=username)
+            login(request, user)  # <-- attaches user to session
+            return redirect(next_url or 'home')
+        else:
+            #message = "Invalid username or password"
+            messages.error(request, "Invalid username or password")
 
         return render(request, self.template_name)
 
@@ -154,30 +153,58 @@ class ChangeEmailView(LoginRequiredMessageMixin,View):
 
         return render(request, self.template_name, context)
 
-    def post(self,request):
-        # email = User.objects.get(username=request.session['username'])
-        # form = UserForm(request.POST, instance=email)
-
+    def post(self, request):
         user = request.user
         form = ChangeEmailForm(request.POST)
         current_password = request.POST.get('current_password')
 
-
+        # Password verification
         if not current_password or not verify_user_password(user.username, current_password):
-            error_password = "Current password is incorrect"
-            return render(request, self.template_name, {'form': form, 'error_password': error_password})
+            if not current_password:
+                error_password = "• This field is required"
+            else:
+                error_password = "• Current password is incorrect"
+
+            return render(
+                request,
+                self.template_name,
+                {
+                    'form': form,
+                    'error_password': error_password,
+                    'userId': get_userInfo(user.username)["userId"]
+                }
+            )
 
         if form.is_valid():
             new_email = form.cleaned_data.get('email')
+
+            # Check if email is empty
+            if not new_email:
+                form.add_error('email', "• This field is required")
+                return render(
+                    request,
+                    self.template_name,
+                    {'form': form, 'userId': get_userInfo(user.username)["userId"]}
+                )
+
+            # Check if email is already taken
+            if User.objects.filter(email=new_email).exclude(username=user.username).exists():
+                form.add_error('email', "• This email is already taken")
+                return render(
+                    request,
+                    self.template_name,
+                    {'form': form, 'userId': get_userInfo(user.username)["userId"]}
+                )
+
+            # If all good, update email
             user.email = new_email
             user.save()
-
             update_user_email(user.username, new_email)
-            messages.success(request,"Email successfully updated")
+            messages.success(request, "Email successfully updated")
             return redirect('profile')
 
-
-        return render(request, self.template_name,{'form': form,})
+        # If form is invalid for other reasons
+        return render(request, self.template_name, {'form': form, 'userId': get_userInfo(user.username)["userId"]})
 
 
 class ChangePasswordView(LoginRequiredMessageMixin, View):
@@ -204,7 +231,7 @@ class ChangePasswordView(LoginRequiredMessageMixin, View):
             return redirect('profile')
 
         messages.error(request, "Please fix the errors below")
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'userId': get_userInfo(request.user.username)["userId"]})
 
 
 #LoginRequiredMixin does not allow user to go to that page without being logged in
@@ -217,7 +244,7 @@ class HomePageView(LoginRequiredMessageMixin,View):
         user_decks = Deck.objects.filter(user__username=request.user.username).order_by('-created_at')
 
         context = {
-            'folders': folders, 
+            'folders': folders,
             'decks': user_decks
         }
 

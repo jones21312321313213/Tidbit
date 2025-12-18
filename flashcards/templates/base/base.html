@@ -142,34 +142,34 @@
             <i class="bi bi-journal-plus text-dark" data-bs-toggle="modal" data-bs-target="#createNoteModal"></i>
           </div>
           <hr>
-    
+
           <!-- Folder list -->
           <ul class="nav nav-pills flex-column mb-auto">
             {% for folder in folders %}
               <li class="nav-item folder-item">
                 <!-- Folder header row -->
                 <div class="d-flex align-items-center justify-content-between">
-                  <a class="nav-link text-dark folder-name" 
+                  <a class="nav-link text-dark folder-name"
                      data-bs-toggle="collapse" href="#folderCollapse{{ folder.FolderID }}" role="button"
                      aria-expanded="false" aria-controls="folderCollapse{{ folder.FolderID }}">
                     {{ folder.name }}
                   </a>
                   <div class="d-flex align-items-center">
-                    <i class="bi bi-chevron-down text-dark ms-2" 
+                    <i class="bi bi-chevron-down text-dark ms-2"
                        data-bs-toggle="collapse" href="#folderCollapse{{ folder.FolderID }}" role="button"
                        aria-expanded="false" aria-controls="folderCollapse{{ folder.FolderID }}"></i>
-                    <i class="bi bi-trash text-danger delete-icon ms-3" 
+                    <i class="bi bi-trash text-danger delete-icon ms-3"
                        data-bs-toggle="modal" data-bs-target="#deleteFolderModal{{ folder.FolderID }}"></i>
                   </div>
                 </div>
-    
+
                 <!-- Created_at only visible on hover -->
                 <div class="created-at d-flex justify-content-end">
                   <small class="text-muted" style="font-size: 0.65rem;">
                     Created: {{ folder.created_at|date:"M d, Y" }}
                   </small>
                 </div>
-    
+
                 <!-- Notes collapsible under folder -->
                 <div class="collapse" id="folderCollapse{{ folder.FolderID }}">
                   <ul class="nav flex-column ms-4 mt-2">
@@ -187,23 +187,23 @@
                         </small>
                       </div>
                     </li>
-                    
+
                     {% empty %}
                       <li class="nav-item text-muted">No notes yet</li>
                     {% endfor %}
                   </ul>
-    
+
                   <!-- Inline Add Note button -->
                   <div class="mt-2 ms-4">
-                    <button class="btn btn-sm btn-outline-success" 
-                            data-bs-toggle="modal" 
+                    <button class="btn btn-sm btn-outline-success"
+                            data-bs-toggle="modal"
                             data-bs-target="#createNoteModal{{ folder.FolderID }}">
                       Add Note
                     </button>
                   </div>
                 </div>
               </li>
-    
+
               <!-- Delete Confirmation Modal (per folder) -->
               <div class="modal fade" id="deleteFolderModal{{ folder.FolderID }}" tabindex="-1">
                 <div class="modal-dialog">
@@ -212,7 +212,7 @@
                   </div>
                 </div>
               </div>
-    
+
               <!-- Add Note Modal (per folder) -->
               <div class="modal fade" id="createNoteModal{{ folder.FolderID }}" tabindex="-1">
                 <div class="modal-dialog">
@@ -228,7 +228,7 @@
             {% endfor %}
           </ul>
         {% endblock right_sidebar_folders %}
-    
+
         <!-- Messages -->
         {% if messages %}
           {% for message in messages %}
@@ -251,18 +251,18 @@
       </div>
     </div>
     {% endblock right_sidebar %}
-    
+
     <style>
       .delete-icon { display: none; cursor: pointer; }
       .folder-item:hover .delete-icon { display: inline; }
-    
+
       .folder-item {
         padding: 4px 8px;
         border-radius: 4px;
         transition: background-color 0.2s ease;
       }
       .folder-item:hover { background-color: #f8f9fa; }
-    
+
       /* Hide timestamps until hover */
         .created-at,
         .note-created-at {
@@ -288,21 +288,21 @@
         max-width: 180px; /* adjust to fit sidebar width */
       }
     </style>
-    
+
     <!-- Other Modals -->
     <div class="modal fade" id="createFolderModal" tabindex="-1">
       <div class="modal-dialog"><div class="modal-content">{% include 'folder/folder_create.html' %}</div></div>
     </div>
-    
+
     <div class="modal fade" id="editFolderModal" tabindex="-1">
       <div class="modal-dialog"><div class="modal-content">{% include 'folder/folder_edit.html' %}</div></div>
     </div>
-    
+
     <!-- Global Create Note Modal -->
     <div class="modal fade" id="createNoteModal" tabindex="-1">
       <div class="modal-dialog"><div class="modal-content">{% include 'folder/note_create.html' %}</div></div>
     </div>
-    
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
