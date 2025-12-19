@@ -1,60 +1,104 @@
 {% extends "base/base.html" %}
 
-{% block title %}User profile{% endblock title %}
+{% block title %}Change Email{% endblock title %}
 
 {% block content %}
-    <div class="mx-auto col-md-10 pt-4 px-5" style="min-height: 300px; max-width: 1000px">
-        <div class="row g-5 align-items-start">
-            <a href="{% url 'profile' %}" class="text-dark text-decoration-none mb-3 d-inline-block">
-                <i class="bi bi-arrow-left fs-4"></i>
+{% if messages %}
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+    {% for message in messages %}
+    <div class="alert
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            alert-danger
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            alert-success
+        {% else %}
+            alert-{{ message.tags }}
+        {% endif %}
+        alert-dismissible fade show shadow-lg" role="alert">
+
+        <strong>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}✅ Success!
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}❌ Error!
+            {% endif %}
+        </strong> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="mx-auto pt-5 px-3 px-md-5" style="min-height: 400px; max-width: 900px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            <a href="{% url 'profile' %}" class="text-dark text-decoration-none mb-4 d-inline-block">
+                <i class="bi bi-arrow-left fs-4 me-2"></i>
             </a>
-            <div class="col-md-6">
-                <div class="details border border-2 rounded p-4 mt-5">
-                    <form method = "POST">
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-dark text-white text-center rounded-top-4 py-3">
+                    <h2 class="mb-0">Change Email Address</h2>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST">
                         {% csrf_token %}
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <label class="form-label" for="userId">UserId</label>
+
+                        <!-- User ID (Read-only) -->
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-md-5">
+                                <label class="form-label text-muted small mb-0" for="userId">USER ID (Read-only)</label>
                             </div>
-                            <div class="col-6">
-                                <input id="userId" class="form-control" value = "{{userId}}" readonly />
+                            <div class="col-md-7">
+                                <input id="userId" class="form-control form-control-lg bg-light rounded-3"
+                                       value="{{ userId }}" readonly />
                             </div>
                         </div>
 
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for = "userId">New Email</label>
-                                 {{ form.email }}
-<!--                            {{ form.email.errors }}-->
+                        <hr class="my-4">
+
+                        <!-- New Email Address -->
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-md-5">
+                                <label class="form-label text-muted small mb-0" for="id_email">NEW EMAIL ADDRESS</label>
+                            </div>
+                            <div class="col-md-7">
+                                {{ form.email }}
                                 {% if form.email.errors %}
-                                    <div class="invalid-feedback d-block">
+                                    <div class="text-danger small mt-1">
                                         {% for error in form.email.errors %}
                                             {{ error }}
                                         {% endfor %}
                                     </div>
                                 {% endif %}
+                            </div>
                         </div>
 
-                        <div class="form-password mb-4 password-container">
-                            <label class="form-label mb-1" for="currentPassword">Password</label>
-                               <input type="password" id="currentPassword" name="current_password" class="form-control" placeholder="Enter current password" required>
-                            {% if error_password %}
-                                    <div class="invalid-feedback d-block">
+                        <!-- Current Password -->
+                        <div class="row mb-5 align-items-center">
+                            <div class="col-md-5">
+                                <label class="form-label text-muted small mb-0" for="currentPassword">YOUR PASSWORD</label>
+                            </div>
+                            <div class="col-md-7">
+                                <input type="password" id="currentPassword" name="current_password"
+                                       class="form-control form-control-lg rounded-3"
+                                       placeholder="Enter current password to confirm">
+                                {% if error_password %}
+                                    <div class="text-danger small mt-1">
                                         {{ error_password }}
                                     </div>
-                            {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
 
-                        <button type="submit" class="btn btn-dark w-100">Save Changes</button>
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-dark btn-lg w-100 shadow-sm">
+                            <i class="bi bi-save-fill me-2"></i> Save Changes
+                        </button>
+
                     </form>
                 </div>
             </div>
-
-
-            <div class="col-md-6 d-flex flex-column align-items-center" style="background-color: #f0f0f0; padding: 80px; border-radius: 10px;">
-                <h5 class="text-dark mb-4">Profile Picture</h5>
-                <i class="bi bi-person-circle" style="font-size: 120px; margin-bottom: 30px;"></i>
-            </div>
-
         </div>
     </div>
+</div>
 {% endblock content %}
