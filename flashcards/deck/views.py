@@ -70,3 +70,44 @@ class DeckDeleteView(LoginRequiredMixin, DeleteView):
             slug=self.kwargs['slug'],
             user=custom_user
         )
+
+class ReviewView(LoginRequiredMixin, View):
+    template_name = 'card/card_review.html'
+
+    def get_next_card(self, deck):
+        # GETS ALL THE CARDS DUE FOR REVIEW
+        card = Card.objects.filter(deck=deck,state__in=[Card.State.New, Card.State.Learning, Card.State.Relearning]).order_by('next_review').first()
+
+        if not card:
+            return None
+
+        # DOWNCAST MEANING GI-SPECIALIZE FROM CARD TO BASIC CARD, OR IDENT CARD, OR IMAGE CARD
+        if hasattr(card, 'basiccard'):
+            return card.basiccard
+        elif hasattr(card, 'identificationcard'):
+            return card.identificationcard
+        elif hasattr(card, 'imageocclusioncard'):
+            return card.imageocclusioncard
+
+        return card
+
+    def get(self, request, slug):
+        deck = get_object_or_404(Deck, slug=slug, user__username=request.user.username)
+        card = self.get_next_card(deck)
+
+        if not card:
+            return render(request, 'card/card_finished.html', {'deck': deck})
+
+        context = {'deck': deck,'card': card}
+        return render(request, self.template_name, context)
+
+    def post(self, request, slug):
+        deck = get_object_or_404(Deck, slug=slug, user__username=request.user.username)
+
+        card_id = request.POST.get('card_id')
+        rating = request.POST.get('rating')
+
+        if card_id and rating:
+            card = get_object_or_404(Card, id=card_id, deck=deck)
+            card.update_schedule(int(rating))
+        return redirect('review', slug=slug)
