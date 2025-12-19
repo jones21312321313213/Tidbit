@@ -52,4 +52,4 @@ class IdentificationCard(Card):
     hidden_field = models.TextField()
 
 class ImageOcclusionCard(Card):
-    img_path = models.ImageField(upload_to='static/card/occlusion_images/')
+    img_path = models.ImageField(upload_to='static/card/occlusion_images/', max_length=255)
