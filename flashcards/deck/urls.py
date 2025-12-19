@@ -6,4 +6,5 @@ urlpatterns = [
     path('<slug:slug>/edit/', views.DeckUpdateView.as_view(), name='deck_update'),
     path('<slug:slug>/delete/', views.DeckDeleteView.as_view(), name='deck_delete'),
     path('<slug:slug>/review/', views.ReviewView.as_view(), name='review'),
+    path('<slug:slug>/', views.DeckListView.as_view(), name='deck_detail'),
 ]

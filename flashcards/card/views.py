@@ -1,4 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.storage import default_storage
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 import django.urls
 from django.urls import reverse_lazy
@@ -8,6 +10,8 @@ from django.views.generic import UpdateView, ListView, DeleteView
 
 from card.forms import BasicCardForm, IdentificationCardForm, ImageOcclusionCardForm
 from card.models import Card, BasicCard, IdentificationCard, ImageOcclusionCard
+from card.procedures import delete_card_proc, create_image_card_proc, create_identification_card_proc, \
+    create_basic_card_proc, update_basic_card_proc, update_identification_card_proc, update_image_card_proc
 from deck.models import Deck
 from user.models import User as CustomUser
 
@@ -16,7 +20,13 @@ class CardDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('card_browse')
 
     def get_queryset(self):
-        return Card.objects.filter(user=self.request.user)
+        custom_user = get_object_or_404(CustomUser, username=self.request.user.username)
+        return Card.objects.filter(user=custom_user)
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        delete_card_proc(self.object.pk, self.request.user.username)
+        return HttpResponseRedirect(success_url)
 
 class BaseCardView(LoginRequiredMixin, View):
     form_class = None
@@ -38,16 +48,27 @@ class BaseCardView(LoginRequiredMixin, View):
         form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid():
-            card = form.save(commit=False)
-            card.deck = deck
-            card.user = custom_user
-            card.save()
+            user_id = custom_user.userId
+            deck_id = deck.deckId
+            front = form.cleaned_data.get('front_field')
 
             if self.card_type == 'image':
+                img_path = form.cleaned_data.get('img_path')
+
+                path_str = ''
+                if img_path:
+                    path_str = default_storage.save(f'static/card/occlusion_images/{img_path.name}', img_path)
+
+                create_image_card_proc(user_id, deck_id, front, path_str)
                 return redirect('create_image_card', slug=slug)
             elif self.card_type == 'identification':
+                hidden = form.cleaned_data.get('hidden_field')
+                create_identification_card_proc(user_id, deck_id, front, hidden)
                 return redirect('create_identification_card', slug=slug)
+
             else:
+                back = form.cleaned_data.get('back_field')
+                create_basic_card_proc(user_id, deck_id, front, back)
                 return redirect('create_basic_card', slug=slug)
 
         context = {'form': form,'deck': deck,'user_decks': user_decks,'card_type': self.card_type}
@@ -56,6 +77,7 @@ class BaseCardView(LoginRequiredMixin, View):
 class ImageCardView(BaseCardView):
     form_class = ImageOcclusionCardForm
     card_type = 'image'
+    template_name = 'card/image_card_create.html'
 
 class IdentificationCardView(BaseCardView):
     form_class = IdentificationCardForm
@@ -90,6 +112,32 @@ class CardEditView(LoginRequiredMixin, UpdateView):
             return ImageOcclusionCardForm
         return BasicCardForm
 
+    def form_valid(self, form):
+        obj = self.object
+        user_id = self.request.user.id
+        card_id = obj.id
+        front = form.cleaned_data.get('front_field')
+
+        if isinstance(obj, BasicCard):
+            back = form.cleaned_data.get('back_field')
+            update_basic_card_proc(card_id, user_id, front, back)
+
+        elif isinstance(obj, IdentificationCard):
+            hidden = form.cleaned_data.get('hidden_field')
+            update_identification_card_proc(card_id, user_id, front, hidden)
+
+        elif isinstance(obj, ImageOcclusionCard):
+            img_path = form.cleaned_data.get('img_path')
+
+            if img_path:
+                path_str = default_storage.save(f'static/card/occlusion_images/{img_path.name}', img_path)
+            else:
+                path_str = obj.img_path.name
+
+            update_image_card_proc(card_id, user_id, front, path_str)
+
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_url(self):
         return django.urls.reverse('review', kwargs={'slug': self.object.deck.slug})
 
@@ -101,16 +149,11 @@ class CardBrowseView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         custom_user = get_object_or_404(CustomUser, username=self.request.user.username)
-
-        # Filter cards by the CustomUser, not request.user
         queryset = Card.objects.filter(user=custom_user).select_related('deck')
-
-        # Filter by Deck
         deck_slug = self.request.GET.get('deck')
         if deck_slug:
             queryset = queryset.filter(deck__slug=deck_slug)
 
-        # Filter by Search (Front Field)
         search_query = self.request.GET.get('search')
         if search_query:
             queryset = queryset.filter(front_field__icontains=search_query)
@@ -121,7 +164,6 @@ class CardBrowseView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         custom_user = get_object_or_404(CustomUser, username=self.request.user.username)
 
-        # Fix: Filter decks using the custom_user as well
         context['decks'] = Deck.objects.filter(user=custom_user)
 
         context['current_deck'] = self.request.GET.get('deck', '')

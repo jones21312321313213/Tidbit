@@ -1,0 +1,47 @@
+CREATE PROCEDURE create_basic_card(IN p_user_id INT, IN p_deck_id INT, IN p_front TEXT, IN p_back TEXT)
+BEGIN
+    INSERT INTO card_card (user_id, deck_id, front_field, state, stability, difficulty, created_at, next_review, last_review, step)
+    VALUES (p_user_id, p_deck_id, p_front, 0, 0, 0, NOW(), NOW(), NULL, NULL);
+    INSERT INTO card_basiccard (card_ptr_id, back_field) VALUES (LAST_INSERT_ID(), p_back);
+END //
+
+CREATE PROCEDURE create_identification_card(IN p_user_id INT, IN p_deck_id INT, IN p_front TEXT, IN p_hidden TEXT)
+BEGIN
+    INSERT INTO card_card (user_id, deck_id, front_field, state, stability, difficulty, created_at, next_review, last_review, step)
+    VALUES (p_user_id, p_deck_id, p_front, 0, 0, 0, NOW(), NOW(), NULL, NULL);
+    INSERT INTO card_identificationcard (card_ptr_id, hidden_field) VALUES (LAST_INSERT_ID(), p_hidden);
+END //
+
+CREATE PROCEDURE create_image_card(IN p_user_id INT, IN p_deck_id INT, IN p_front TEXT, IN p_img_path VARCHAR(255))
+BEGIN
+    INSERT INTO card_card (user_id, deck_id, front_field, state, stability, difficulty, created_at, next_review, last_review, step)
+    VALUES (p_user_id, p_deck_id, p_front, 0, 0, 0, NOW(), NOW(), NULL, NULL);
+    INSERT INTO card_imageocclusioncard (card_ptr_id, img_path) VALUES (LAST_INSERT_ID(), p_img_path);
+END //
+
+CREATE PROCEDURE update_basic_card(IN p_card_id INT, IN p_user_id INT, IN p_front TEXT, IN p_back TEXT)
+BEGIN
+    UPDATE card_card SET front_field = p_front WHERE id = p_card_id AND user_id = p_user_id;
+    UPDATE card_basiccard SET back_field = p_back WHERE card_ptr_id = p_card_id;
+END //
+
+CREATE PROCEDURE update_identification_card(IN p_card_id INT, IN p_user_id INT, IN p_front TEXT, IN p_hidden TEXT)
+BEGIN
+    UPDATE card_card SET front_field = p_front WHERE id = p_card_id AND user_id = p_user_id;
+    UPDATE card_identificationcard SET hidden_field = p_hidden WHERE card_ptr_id = p_card_id;
+END //
+
+CREATE PROCEDURE update_image_card(IN p_card_id INT, IN p_user_id INT, IN p_front TEXT, IN p_img_path VARCHAR(255))
+BEGIN
+    UPDATE card_card SET front_field = p_front WHERE id = p_card_id AND user_id = p_user_id;
+    UPDATE card_imageocclusioncard SET img_path = p_img_path WHERE card_ptr_id = p_card_id;
+END //
+
+CREATE PROCEDURE delete_card_procedure(IN p_card_id INT, IN p_username VARCHAR(150))
+BEGIN
+    DECLARE v_user_id INT;
+    SELECT userId INTO v_user_id FROM user_user WHERE username = p_username;
+    IF v_user_id IS NOT NULL THEN
+        DELETE FROM card_card WHERE id = p_card_id AND user_id = v_user_id;
+    END IF;
+END //
