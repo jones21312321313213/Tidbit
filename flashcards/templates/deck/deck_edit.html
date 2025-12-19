@@ -1,0 +1,32 @@
+{% extends "base/base.html" %}
+
+{% block title %}Edit Deck{% endblock title %}
+
+{% block content %}
+<div class="mx-auto col-md-7 pt-4 px-5" style="min-height: 300px; max-width: 1000px">
+    <h1 class="mb-4">Edit Deck</h1>
+
+    <form method="post" action="{% url 'deck_update' deck.slug %}">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="name" value="{{ deck.name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description" name="description" value="{{ deck.description }}" required>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'deck_detail' deck.slug %}" class="btn btn-secondary" style="border-radius:6px;">
+                <i class="bi bi-x"></i> Cancel
+            </a>
+            <button type="submit" class="btn btn-dark" style="border-radius:6px;">
+                <i class="bi bi-check"></i> Save
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

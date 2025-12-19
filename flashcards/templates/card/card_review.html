@@ -1,0 +1,144 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load card_extras %}
+
+{% block title %}Study Mode{% endblock title %}
+{% block content %}
+    <div class="d-flex flex-column h-100 w-100">
+
+        <div class="flex-grow-1 d-flex align-items-center justify-content-center p-4">
+
+            <div class="card border border-dark rounded shadow-sm w-100 d-flex align-items-center justify-content-center"
+                 style="max-width: 800px; min-height: 500px;">
+                <div class="card-body d-flex flex-column align-items-center justify-content-center w-100 p-5">
+                    <div id="card-content-front" class="text-center w-100">
+
+                        {% if card.img_path %}
+                            {% with prompt=card.front_field|json_prompt rect=card.front_field|json_rect %}
+                                {% if prompt %}
+                                    <h3 class="mb-4">{{ prompt }}</h3>
+                                {% endif %}
+
+                                <div class="position-relative d-inline-block">
+                                    <img id="review-image-front" src="{{ card.img_path.url }}" alt="Flashcard Image" class="img-fluid rounded" style="max-height: 400px;">
+
+                                    {% if rect %}
+                                        <div class="occlusion-mask"
+                                             data-x="{{ rect.x }}" data-y="{{ rect.y }}"
+                                             data-w="{{ rect.width }}" data-h="{{ rect.height }}"
+                                             style="position: absolute; background-color: #FFE135; border: 1px solid #000;">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endwith %}
+                        {% elif card.back_field %}
+                            <h1 class="display-6">{{ card.front_field }}</h1>
+
+                        {% else %}
+                            <h1 class="display-6" style="line-height: 1.6;">{{ card.front_field|cloze_front }}</h1>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div id="card-content-back" class="text-center w-100 d-none">
+
+                        {% if card.img_path %}
+                            {% with prompt=card.front_field|json_prompt %}
+                                {% if prompt %}
+                                    <h3 class="mb-4">{{ prompt }}</h3>
+                                {% endif %}
+                                <img src="{{ card.img_path.url }}" alt="Flashcard Image" class="img-fluid" style="max-height: 400px;">
+                            {% endwith %}
+
+                        {% elif card.back_field %}
+                            <p class="text-muted mb-3">{{ card.front_field }}</p>
+                            <hr class="w-50 mx-auto mb-4">
+                            <h1 class="display-6 text-success">{{ card.back_field }}</h1>
+
+                        {% else %}
+                            <h1 class="display-6" style="line-height: 1.6;">{{ card.front_field|cloze_back }}</h1>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="d-flex justify-content-center align-items-center w-100 mx-auto pb-5">
+
+            <div id="controls-reveal" class="d-flex gap-4">
+                <a href="{% url 'card_edit' card.id %}" class="btn btn-dark btn-lg px-4">Edit</a>
+                <button type="button" class="btn btn-dark btn-lg px-4" style="min-width: 500px" onclick="showAnswer()">
+                    Reveal
+                </button>
+                <a href="{% url 'create_basic_card' deck.slug %}" class="btn btn-dark btn-lg px-4">Add</a>
+            </div>
+
+            <div id="controls-grade" class="d-flex gap-4 d-none">
+                <a href="{% url 'card_edit' card.id %}" class="btn btn-dark btn-lg px-4">Edit</a>
+
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="card_id" value="{{ card.id }}">
+                    <input type="hidden" name="rating" value="1">
+                    <button type="submit" class="btn btn-secondary btn-lg px-4" style="min-width: 200px">
+                        Again
+                    </button>
+                </form>
+
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="card_id" value="{{ card.id }}">
+                    <input type="hidden" name="rating" value="3">
+                    <button type="submit" class="btn btn-success btn-lg px-4" style="min-width: 200px">
+                        Good
+                    </button>
+                </form>
+
+                <a href="{% url 'create_basic_card' deck.slug %}" class="btn btn-dark btn-lg px-4">Add</a>
+            </div>
+
+        </footer>
+    </div>
+
+    <script>
+        function showAnswer() {
+            document.getElementById('card-content-front').classList.add('d-none');
+            document.getElementById('card-content-back').classList.remove('d-none');
+
+            document.getElementById('controls-reveal').classList.add('d-none');
+            document.getElementById('controls-grade').classList.remove('d-none');
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space') {
+                event.preventDefault();
+                const revealControls = document.getElementById('controls-reveal');
+                if (!revealControls.classList.contains('d-none')) {
+                    showAnswer();
+                }
+            }
+        });
+
+        window.addEventListener('load', function() {
+            const img = document.getElementById('review-image-front');
+            const mask = document.querySelector('.occlusion-mask');
+
+            if (img && mask) {
+                function resizeMask() {
+                    const scale = img.width / img.naturalWidth;
+                    mask.style.left = (parseFloat(mask.dataset.x) * scale) + 'px';
+                    mask.style.top = (parseFloat(mask.dataset.y) * scale) + 'px';
+                    mask.style.width = (parseFloat(mask.dataset.w) * scale) + 'px';
+                    mask.style.height = (parseFloat(mask.dataset.h) * scale) + 'px';
+                }
+                resizeMask();
+                window.addEventListener('resize', resizeMask);
+            }
+        });
+    </script>
+{% endblock content %}

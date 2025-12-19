@@ -1,16 +1,35 @@
 {% extends "base/base.html" %}
 
-{% block title %}User profile{% endblock title %}
+{% block title %}User Profile{% endblock title %}
 
 {% block content %}
-<!-- Message Display Section -->
+<style>
+    /* Class for the Change Password button */
+    .btn-dark-hover-light {
+        /* Default state is dark */
+        background-color: #212529 !important; /* Bootstrap .btn-dark color */
+        color: #fff !important;
+        border-color: #212529 !important;
+        transition: all 0.2s ease-in-out; /* Smooth transition for hover */
+    }
+
+    /* Hover state: White background, Black text */
+    .btn-dark-hover-light:hover,
+    .btn-dark-hover-light:focus {
+        background-color: #f8f9fa !important; /* Bootstrap .bg-light color */
+        color: #212529 !important; /* Bootstrap .text-dark color */
+        border-color: #212529 !important;
+        /* Ensure shadow remains consistent or is adjusted */
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>
 {% if messages %}
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
     {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-lg" role="alert">
         <strong>
             {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                Success!
+               Success!
             {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
                 Error!
             {% endif %}
@@ -20,62 +39,60 @@
     {% endfor %}
 </div>
 {% endif %}
-<!-- End Message Display -->
-
-    <div class="mx-auto col-md-10 pt-4 px-5" style="min-height: 300px; max-width: 1000px">
-        <div class="row g-5 align-items-start">
-            <!-- Details on the left -->
-            <div class="col-md-6">
-                <div class="details border border-2 rounded p-3">
+<div class="mx-auto pt-5 px-3 px-md-5" style="min-height: 400px; max-width: 1000px;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-dark text-white text-center rounded-top-4 py-3">
+                    <h2 class="mb-0">Account Details</h2>
+                </div>
+                <div class="card-body p-4 p-md-5">
                     <form>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <label class="form-label" for="userId">UserId</label>
-                            </div>
-                            <div class="col-6">
-                                <input id="userId" class="form-control" value = "{{userId}}" readonly />
-                            </div>
-                        </div>
-
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="username">Username</label>
-                            <input id="username" class="form-control" value = "{{ username}}" readonly />
-                        </div>
-
-                        <div class="form-password mb-4 password-container">
-                            <label class="form-label mb-1" for="passwordInput">Password</label>
-                            <input type="password" id="passwordInput" class="form-control" placeholder="*****" readonly>
-                        </div>
-
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="email">Email</label>
-                            <input id="email" class="form-control" value = "{{email}}" readonly />
-                        </div>
-
-                        <div class="form-password mb-4 password-container">
-                            <label class="form-label mb-1" for="dateInput">Created at</label>
-                            <input type="date" id="dateInput" class="form-control"  value = "{{created_at|date:'Y-m-d'}}" readonly>
-                        </div>
-
                         <div class="row mb-4">
-                            <div class="col-6">
-                                <button type="button" class="btn btn-dark w-100" onclick="window.location.href='{% url 'change_password' %}'">Change Password</button>
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label text-muted small" for="userId">USER ID</label>
+                                <input id="userId" class="form-control form-control-lg bg-light border-0" value = "{{userId}}" readonly />
                             </div>
-                            <div class="col-6">
-                                <button type="button" class="btn btn-dark w-100" onclick="window.location.href='{% url 'change_email' %}'">Change Email</button>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small" for="username">USERNAME</label>
+                                <input id="username" class="form-control form-control-lg bg-light border-0" value = "{{ username}}" readonly />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-muted small" for="passwordInput">PASSWORD</label>
+                            <div class="input-group">
+                                <input type="password" id="passwordInput" class="form-control form-control-lg bg-light border-0" placeholder="••••••••" readonly>
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-lock-fill"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-muted small" for="email">EMAIL ADDRESS</label>
+                            <input id="email" class="form-control form-control-lg bg-light border-0" value = "{{email}}" readonly />
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="form-label text-muted small" for="dateInput">ACCOUNT CREATED ON</label>
+                            <input type="date" id="dateInput" class="form-control form-control-lg bg-light border-0"  value = "{{created_at|date:'Y-m-d'}}" readonly>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-lg w-100 shadow-sm btn-dark-hover-light" onclick="window.location.href='{% url 'change_password' %}'">
+                                    <i class="bi bi-key-fill me-2"></i> Change Password
+                                </button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-outline-dark btn-lg w-100" onclick="window.location.href='{% url 'change_email' %}'">
+                                    <i class="bi bi-envelope-fill me-2"></i> Change Email
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-
-
-            <div class="col-md-6 d-flex flex-column align-items-center" style="background-color: #f0f0f0; padding: 80px; border-radius: 10px;">
-                <h5 class="text-dark mb-4">Profile Picture</h5>
-                <i class="bi bi-person-circle" style="font-size: 120px; margin-bottom: 30px;"></i>
-                <button type="button" class="btn btn-dark w-100">Change Profile Picture</button>
-            </div>
-
         </div>
     </div>
+</div>
 {% endblock content %}

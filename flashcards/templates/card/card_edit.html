@@ -1,0 +1,175 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Edit Card{% endblock title %}
+
+{% block content %}
+    <div class="mx-auto col-md-8 pt-5" style="max-width: 800px;">
+        <div class="card shadow-sm border border-secondary">
+            <div class="card-header bg-dark text-white">
+                <h3 class="mb-0">Edit Flashcard</h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" id="editForm">
+                    {% csrf_token %}
+                    {% if card.img_path %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Prompt (Optional)</label>
+                            {{ form.front_field }}
+                            <div class="form-text">The question text displayed above the image.</div>
+                        </div>
+
+                        {{ form.occlusion_data }}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Occlusion Mask</label>
+                            <div class="border bg-light text-center position-relative p-2" style="min-height: 300px;">
+                                <div style="display: inline-block; position: relative;">
+                                    {# Hidden source image to load into canvas #}
+                                    <img id="sourceImage" src="{{ card.img_path.url }}" style="display: none;" crossorigin="anonymous">
+
+                                    <canvas id="drawCanvas" style="cursor: crosshair; max-width: 100%; box-shadow: 0 0 5px rgba(0,0,0,0.2);"></canvas>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-center">
+                                <button type="button" class="btn btn-sm btn-warning" onclick="resetCanvas()">Clear & Redraw Mask</button>
+                                <div class="small text-muted mt-1">Click and drag to draw a new box. Only one box is allowed per card.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#imgUploadCollapse">
+                                Replace Image File?
+                            </button>
+                            <div class="collapse mt-2" id="imgUploadCollapse">
+                                <div class="card card-body">
+                                    {{ form.img_path }}
+                                </div>
+                            </div>
+                        </div>
+
+                    {% else %}
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-bold">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="text-danger small">{{ field.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'review' card.deck.slug %}" class="btn btn-outline-secondary px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if card.img_path %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const imgElement = document.getElementById('sourceImage');
+                const canvas = document.getElementById('drawCanvas');
+                const ctx = canvas.getContext('2d');
+                const hiddenInput = document.querySelector('input[name="occlusion_data"]');
+
+                let currentRect = null;
+                let isDrawing = false;
+                let startX, startY;
+
+                // 1. Initialize Canvas when image loads
+                if (imgElement.complete) {
+                    initCanvas();
+                } else {
+                    imgElement.onload = initCanvas;
+                }
+
+                function initCanvas() {
+                    canvas.width = imgElement.naturalWidth;
+                    canvas.height = imgElement.naturalHeight;
+
+                    if (hiddenInput.value) {
+                        try {
+                            currentRect = JSON.parse(hiddenInput.value);
+                        } catch(e) { console.error("Invalid JSON in occlusion_data"); }
+                    }
+                    redraw();
+                }
+
+                canvas.addEventListener('mousedown', (e) => {
+                    isDrawing = true;
+                    currentRect = null;
+                    const pos = getMousePos(e);
+                    startX = pos.x;
+                    startY = pos.y;
+                });
+
+                canvas.addEventListener('mousemove', (e) => {
+                    if (!isDrawing) return;
+                    const pos = getMousePos(e);
+                    redraw();
+
+                    ctx.strokeStyle = "#FF0000";
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(startX, startY, pos.x - startX, pos.y - startY);
+                });
+
+                canvas.addEventListener('mouseup', (e) => {
+                    isDrawing = false;
+                    const pos = getMousePos(e);
+                    const w = pos.x - startX;
+                    const h = pos.y - startY;
+
+                    if (Math.abs(w) > 5 && Math.abs(h) > 5) {
+                        currentRect = {
+                            x: w < 0 ? pos.x : startX,
+                            y: h < 0 ? pos.y : startY,
+                            width: Math.abs(w),
+                            height: Math.abs(h)
+                        };
+                        updateHiddenInput();
+                    }
+                    redraw();
+                });
+
+                function getMousePos(evt) {
+                    const rect = canvas.getBoundingClientRect();
+                    const scaleX = canvas.width / rect.width;
+                    const scaleY = canvas.height / rect.height;
+                    return {
+                        x: (evt.clientX - rect.left) * scaleX,
+                        y: (evt.clientY - rect.top) * scaleY
+                    };
+                }
+
+                function redraw() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(imgElement, 0, 0);
+
+                    if (currentRect) {
+                        ctx.fillStyle = "rgba(255, 225, 53, 0.6)"; // Anki-yellow style
+                        ctx.fillRect(currentRect.x, currentRect.y, currentRect.width, currentRect.height);
+                        ctx.strokeStyle = "black";
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(currentRect.x, currentRect.y, currentRect.width, currentRect.height);
+                    }
+                }
+
+                window.resetCanvas = function() {
+                    currentRect = null;
+                    hiddenInput.value = "";
+                    redraw();
+                };
+
+                function updateHiddenInput() {
+                    hiddenInput.value = JSON.stringify(currentRect);
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}
