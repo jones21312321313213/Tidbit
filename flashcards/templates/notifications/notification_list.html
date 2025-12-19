@@ -2,7 +2,7 @@
 {% load static %}
 
 {# 1. Override the title for this specific page #}
-{% block title %}Decks Due Today{% endblock title %}
+{% block title %}Notifications{% endblock title %}
 
 {# 3. The Main Content Block - This replaces the center area of base.html #}
 {% block content %}
@@ -11,41 +11,129 @@
         <div class="p-4 rounded-3 border bg-white shadow-sm border-secondary w-100">
 
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="fw-normal">Notifications</h2>
-                <form method="get" class="d-flex align-items-center">
-                    <div class="me-2 small text-muted">Filter:</div>
-                    <select name="filter" class="form-select form-select-sm" onchange="this.form.submit()">
-                        <option value="all" {% if filter == 'all' %}selected{% endif %}>All ({{ counts.all }})</option>
-                        <option value="unread" {% if filter == 'unread' %}selected{% endif %}>Unread ({{ counts.unread }})</option>
-                        <option value="read" {% if filter == 'read' %}selected{% endif %}>Read ({{ counts.read }})</option>
-                    </select>
-                </form>
+                <h2 class="fw-normal">Cards Due for Review</h2>
+                <div class="d-flex align-items-center gap-3">
+                    {% if total_due_cards > 0 %}
+                        <span class="badge bg-danger">{{ total_due_cards }} cards due</span>
+                    {% endif %}
+                    <form method="get" class="d-flex align-items-center gap-2">
+                        <div class="d-flex align-items-center">
+                            <div class="me-2 small text-muted">State:</div>
+                            <select name="card_state_filter" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="all" {% if card_state_filter == 'all' %}selected{% endif %}>All States ({{ total_due_cards }})</option>
+                                <option value="new" {% if card_state_filter == 'new' %}selected{% endif %}>New ({{ cards_by_state.new }})</option>
+                                <option value="learning" {% if card_state_filter == 'learning' %}selected{% endif %}>Learning ({{ cards_by_state.learning }})</option>
+                                <option value="review" {% if card_state_filter == 'review' %}selected{% endif %}>Review ({{ cards_by_state.review }})</option>
+                                <option value="relearning" {% if card_state_filter == 'relearning' %}selected{% endif %}>Relearning ({{ cards_by_state.relearning }})</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            {% if notifications %}
-                <ul class="list-group">
-                    {% for note in notifications %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center {% if not note.status %}list-group-item-warning{% endif %}">
-                            <div>
-                                <div class="fw-bold">{{ note.description }}</div>
-                                <div class="small text-muted">{{ note.schedule|date:"SHORT_DATETIME_FORMAT" }}</div>
+            {% if total_due_cards > 0 %}
+                <!-- Cards by State Summary -->
+                <div class="row mb-4">
+                    <div class="col-3">
+                        <div class="card text-center bg-light">
+                            <div class="card-body p-2">
+                                <div class="fw-bold text-primary">{{ cards_by_state.new }}</div>
+                                <div class="small text-muted">New</div>
                             </div>
-                            <div class="text-end">
-                                {% if not note.status %}
-                                    <form method="post" action="{% url 'notification_read' note.notificationId %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="filter" value="{{ filter }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-primary">Mark as read</button>
-                                    </form>
-                                {% else %}
-                                    <span class="badge bg-secondary">Read</span>
-                                {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card text-center bg-light">
+                            <div class="card-body p-2">
+                                <div class="fw-bold text-warning">{{ cards_by_state.learning }}</div>
+                                <div class="small text-muted">Learning</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card text-center bg-light">
+                            <div class="card-body p-2">
+                                <div class="fw-bold text-success">{{ cards_by_state.review }}</div>
+                                <div class="small text-muted">Review</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card text-center bg-light">
+                            <div class="card-body p-2">
+                                <div class="fw-bold text-danger">{{ cards_by_state.relearning }}</div>
+                                <div class="small text-muted">Relearning</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if due_decks %}
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3">Decks with Due Cards</h5>
+                        <ul class="list-group mb-4">
+                            {% for deck in due_decks %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="fw-bold">{{ deck.name }}</span>
+                                        <div class="small text-muted">{{ deck.description }}</div>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">{{ deck.due_count }} due</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% if due_cards %}
+                <h5 class="text-muted mb-3">
+                    {% if card_state_filter == 'new' %}
+                        New Cards
+                    {% elif card_state_filter == 'learning' %}
+                        Learning Cards
+                    {% elif card_state_filter == 'review' %}
+                        Review Cards
+                    {% elif card_state_filter == 'relearning' %}
+                        Relearning Cards
+                    {% else %}
+                        All Due Cards
+                    {% endif %}
+                </h5>
+                <ul class="list-group">
+                    {% for card in due_cards %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="fw-bold">{{ card.front_field|truncatewords:10 }}</span>
+                                        {% if card.state == 0 %}
+                                            <span class="badge bg-primary">New</span>
+                                        {% elif card.state == 1 %}
+                                            <span class="badge bg-warning">Learning</span>
+                                        {% elif card.state == 2 %}
+                                            <span class="badge bg-success">Review</span>
+                                        {% elif card.state == 3 %}
+                                            <span class="badge bg-danger">Relearning</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="small text-muted">Deck: {{ card.deck.name }}</div>
+                                    <div class="small text-muted">
+                                        Due: {{ card.next_review|date:"SHORT_DATETIME_FORMAT" }}
+                                        {% if card.last_review %}
+                                            | Last review: {{ card.last_review|date:"SHORT_DATETIME_FORMAT" }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="small text-muted">
+                                        Difficulty: {{ card.difficulty|floatformat:2 }} | Stability: {{ card.stability|floatformat:2 }}
+                                    </div>
+                                </div>
                             </div>
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <div class="text-center text-muted py-4">No notifications to show.</div>
+                <div class="text-center text-muted py-4">No due cards to show.</div>
             {% endif %}
 
         </div>
