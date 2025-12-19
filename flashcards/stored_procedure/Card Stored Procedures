@@ -37,11 +37,22 @@ BEGIN
     UPDATE card_imageocclusioncard SET img_path = p_img_path WHERE card_ptr_id = p_card_id;
 END //
 
-CREATE PROCEDURE delete_card_procedure(IN p_card_id INT, IN p_username VARCHAR(150))
+DROP PROCEDURE IF EXISTS delete_card_procedure;
+
+CREATE PROCEDURE delete_card_procedure(IN p_card_id INT,IN p_username VARCHAR(150))
 BEGIN
     DECLARE v_user_id INT;
-    SELECT userId INTO v_user_id FROM user_user WHERE username = p_username;
+
+    SELECT userId INTO v_user_id
+    FROM user_user
+    WHERE username = p_username;
+
     IF v_user_id IS NOT NULL THEN
-        DELETE FROM card_card WHERE id = p_card_id AND user_id = v_user_id;
+        DELETE FROM card_imageocclusioncard WHERE card_ptr_id = p_card_id;
+        DELETE FROM card_identificationcard WHERE card_ptr_id = p_card_id;
+        DELETE FROM card_basiccard WHERE card_ptr_id = p_card_id;
+
+        DELETE FROM card_card
+        WHERE id = p_card_id AND user_id = v_user_id;
     END IF;
-END //
+END
